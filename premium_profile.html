@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Clinton Oremo Ouma — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,700&family=Outfit:wght@300;400;600&family=Space+Mono:400,700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#080b0f;
+      --gold:#c8a96e;
+      --gold-2:#e8cc94;
+      --muted:#f0ece4;
+      --accent:linear-gradient(135deg,var(--gold),var(--gold-2));
+      --border: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.03);
+      --max-width:1100px;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;font-family:Outfit,system-ui,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--muted); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; overflow-x:hidden;
+      background-image: radial-gradient(1200px 600px at 20% 10%, rgba(200,169,110,0.06), transparent 12%), radial-gradient(800px 500px at 85% 80%, rgba(232,204,148,0.04), transparent 15%);
+    }
+
+    /* gold grain noise overlay (data URI SVG) */
+    .grain::after{
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:99999; mix-blend-mode:overlay; opacity:0.08; background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="n"><feTurbulence baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect filter="url(%23n)" width="100%" height="100%"/></svg>');
+    }
+
+    /* custom thin gold scrollbar */
+    ::-webkit-scrollbar{width:10px;height:10px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold),var(--gold-2)); border-radius:999px; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.2)}
+
+    .container{max-width:var(--max-width);margin:0 auto;padding:28px;}
+
+    /* Loader */
+    #loader{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:99998}
+    #loader .name{font-family:'Cormorant Garamond', serif;color:var(--gold);font-size:40px;letter-spacing:0.02em}
+    #loader .bar{width:320px;height:8px;background:rgba(255,255,255,0.04);border-radius:999px;margin-top:18px;overflow:hidden}
+    #loader .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-2));border-radius:999px;animation:load 2s linear forwards}
+    @keyframes load{to{width:100%}}
+
+    /* Cursor */
+    .cursor-dot,.cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:999999;mix-blend-mode:screen}
+    .cursor-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%)}
+    .cursor-ring{width:48px;height:48px;border-radius:50%;border:2px solid rgba(200,169,110,0.25);transform:translate(-50%,-50%);transition:width .18s,height .18s,opacity .2s}
+
+    nav{position:fixed;left:0;right:0;top:18px;display:flex;align-items:center;justify-content:space-between;padding:12px 28px;z-index:9999;transition:backdrop-filter .25s,background .25s}
+    nav.scrolled{backdrop-filter: blur(8px);background:rgba(8,11,15,0.45);border-bottom:1px solid rgba(255,255,255,0.03)}
+    .brand{font-family:'Cormorant Garamond', serif;color:var(--gold);font-size:18px}
+    .nav-links{display:flex;gap:18px;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;opacity:0.9}
+    .btn-gold{background:linear-gradient(90deg,var(--gold),var(--gold-2));color:#080b0f;padding:10px 14px;border-radius:12px;font-weight:600;text-decoration:none}
+
+    /* Hero */
+    .hero{min-height:100vh;display:grid;grid-template-columns:1fr 420px;align-items:center;gap:40px;padding:120px 20px 80px;position:relative;overflow:hidden}
+    .hero .eyebrow{font-family:Space Mono,monospace;font-size:12px;display:inline-block;color:rgba(240,236,228,0.7);margin-bottom:12px}
+    .hero h1{font-family:'Cormorant Garamond', serif;font-size:72px;line-height:0.88;margin:0;color:var(--muted)}
+    .hero h1 .surname{font-style:italic;color:var(--gold);margin-left:10px}
+    .hero p.lead{max-width:680px;color:rgba(240,236,228,0.84);font-size:18px;margin-top:18px}
+    .hero .ctas{margin-top:22px;display:flex;gap:14px}
+    .scroll-indicator{position:fixed;right:18px;bottom:18px;font-family:Space Mono,monospace;color:rgba(240,236,228,0.6);font-size:12px}
+
+    /* hero radial mesh background lines */
+    .hero::before{content:'';position:absolute;inset:-20% -10% auto -10%;height:140%;background:radial-gradient(closest-side, rgba(200,169,110,0.04),transparent 30%);opacity:0.25;transform:translateZ(0);pointer-events:none}
+    .v-lines{position:absolute;inset:0;opacity:0.04;pointer-events:none;background-image:linear-gradient(90deg,transparent 24px, rgba(255,255,255,0.02) 25px);background-size:50px 100%}
+
+    /* Hero image container (right) */
+    .hero-photo{position:relative;width:100%;height:420px;display:flex;align-items:end;justify-content:center}
+    .hero-photo .frame{width:320px;height:420px;border-radius:12px;padding:8px;background:linear-gradient(180deg, rgba(200,169,110,0.06), rgba(232,204,148,0.03));box-shadow:0 30px 80px rgba(0,0,0,0.6);overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+    .hero-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(0.02) contrast(1.02)}
+    .hero-photo .fade{position:absolute;right:0;bottom:0;width:60%;height:100%;background:linear-gradient(to left, rgba(8,11,15,1), rgba(8,11,15,0));pointer-events:none}
+
+    /* Stats strip */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px}
+    .stat{padding:16px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.02);text-align:center;transition:background .18s,transform .12s}
+    .stat:hover{background:linear-gradient(180deg,rgba(200,169,110,0.06),rgba(232,204,148,0.03));transform:translateY(-6px)}
+    .stat h4{margin:0;color:var(--gold)}
+
+    /* Sections */
+    section{padding:80px 20px}
+    h2.section-title{font-family:'Cormorant Garamond', serif;font-size:28px;margin:0 0 18px}
+    .two-col{display:grid;grid-template-columns:2fr 1fr;gap:28px}
+    .sticky-card{position:sticky;top:110px;background:rgba(255,255,255,0.02);padding:20px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
+    .badge-open{display:inline-block;padding:6px 10px;background:linear-gradient(90deg,#17c964,#0fa34a);color:#071013;border-radius:999px;font-weight:700}
+
+    /* Expertise grid */
+    .grid-6{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:12px;border-top:3px solid transparent;transition:transform .18s,border-top-color .18s}
+    .card:hover{transform:translateY(-10px);border-top-color:var(--gold)}
+    .card h3{margin:0 0 8px;color:var(--gold)}
+
+    /* Experience timeline */
+    .timeline{display:grid;gap:18px}
+    .timeline-item{display:grid;grid-template-columns:220px 40px 1fr;gap:16px;align-items:start}
+    .timeline-item .line{width:4px;background:linear-gradient(180deg,var(--gold),var(--gold-2));height:100%;border-radius:4px}
+    .role-badge{background:linear-gradient(90deg,var(--gold),var(--gold-2));color:#080b0f;padding:6px 10px;border-radius:8px;display:inline-block}
+    .duty{margin:8px 0;padding-left:10px}
+
+    /* Education */
+    .edu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+
+    /* Contact */
+    .contact-cta{text-align:center;padding:60px 20px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+    .contact-cta h2{font-family:'Cormorant Garamond', serif;color:var(--gold);font-size:48px;font-style:italic}
+
+    /* Reveal animations */
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.visible{opacity:1;transform:none}
+
+    /* Responsive */
+    @media(max-width:960px){.hero{grid-template-columns:1fr;min-height:80vh;padding-top:100px}.hero-photo{display:none}.grid-6{grid-template-columns:repeat(2,1fr)}.edu-grid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
+    @media(max-width:560px){.grid-6{grid-template-columns:1fr}.edu-grid{grid-template-columns:1fr}.stat h4{font-size:14px}}
+
+    /* small helpers */
+    .muted{opacity:0.8}
+    a.link{color:var(--gold);text-decoration:none}
+  </style>
+</head>
+<body class="grain">
+  <div id="loader"><div class="name">Clinton Oremo Ouma</div><div class="bar"><i></i></div></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav id="nav" class="container">
+    <div class="brand">Clinton O.</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#expertise">Expertise</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a class="btn-gold" href="#contact">Hire Me</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="v-lines"></div>
+      <div class="container">
+        <span class="eyebrow reveal">Finance & Accounting Professional · Nairobi, Kenya</span>
+        <h1 class="reveal">Clinton Oremo <span class="surname">/ Ouma.</span></h1>
+        <p class="lead reveal">BBA (Accounting) · CPA Finalist · 5+ Years across NGOs, Government, Fintech & Healthcare</p>
+        <div class="ctas reveal">
+          <a class="btn-gold" href="mailto:clintoniremo@gmail.com">Get In Touch</a>
+          <a class="link" href="#experience">View Experience</a>
+        </div>
+      </div>
+
+      <aside class="hero-photo reveal">
+        <div class="frame">
+          <img id="heroImg" src="profile.jpg" alt="Clinton Oremo Ouma" onerror="this.onerror=null;this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAAH0lEQVR4Ae3BMQEAAADCoPVPbQhPoAAAAAAAAAAAAAAA4G8AAS4pYyQAAAAASUVORK5CYII='" />
+        </div>
+        <div class="fade"></div>
+      </aside>
+
+      <div class="container stats reveal">
+        <div class="stat"><h4>5+ Years</h4><div class="muted">Experience</div></div>
+        <div class="stat"><h4>6+ Sectors</h4><div class="muted">NGO · Government · Fintech · Healthcare</div></div>
+        <div class="stat"><h4>4</h4><div class="muted">Clean Audit Reports</div></div>
+        <div class="stat"><h4>CPA</h4><div class="muted">Fully Qualified</div></div>
+      </div>
+
+      <div class="scroll-indicator">scroll · ↓</div>
+    </section>
+
+    <section id="about" class="reveal container">
+      <h2 class="section-title">Professional Profile</h2>
+      <div class="two-col">
+        <div>
+          <p>Clinton blends meticulous accounting practice with strategic financial oversight to deliver clarity and control for growing organisations. He translates complex financial data into actionable insights for leadership teams.</p>
+          <p>His experience spans statutory reporting, donor-funded project accounting, payroll administration, and systems implementation across varied sectors. He emphasises clean controls and audit readiness.</p>
+          <p>Clinton leads with a service mindset — championing transparent processes and continuous improvement in finance operations.</p>
+          <blockquote style="border-left:4px solid var(--gold);padding:12px;margin:18px 0;background:rgba(200,169,110,0.03);">Career Objective: To lead finance functions that combine compliance excellence with systems-driven efficiency.</blockquote>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px">
+            <div class="card">
+              <h3 class="muted">Key Competencies</h3>
+              <ul class="muted">
+                <li>Financial Reporting (IFRS / IAS)</li>
+                <li>IFRS 18 / IAS 1</li>
+                <li>IFRS 9</li>
+                <li>Budgeting & Forecasting</li>
+                <li>Reconciliations & Controls</li>
+                <li>Payroll Administration</li>
+                <li>Tax & Statutory Filings</li>
+                <li>Grant & Donor Accounting</li>
+                <li>Audit Readiness</li>
+                <li>Cashflow Management</li>
+                <li>Stakeholder Reporting</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="muted">Software Proficiency</h3>
+              <ul class="muted">
+                <li>ERP systems</li>
+                <li>QuickBooks Desktop & Online</li>
+                <li>Manager.io</li>
+                <li>School Management Systems</li>
+                <li>Zoho Books</li>
+                <li>Microsoft Excel (Advanced)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <aside class="sticky-card">
+          <h3 style="color:var(--gold);margin:0 0 10px">Contact</h3>
+          <div class="muted">Nairobi, Kenya</div>
+          <div style="margin-top:8px;"><a class="link" href="tel:+254745313247">+254 745 313 247</a></div>
+          <div style="margin-top:8px;"><a class="link" href="mailto:clintoniremo@gmail.com">clintoniremo@gmail.com</a></div>
+          <div style="margin-top:8px;"><a class="link" href="https://www.linkedin.com/in/clinton-oremo-471813228" target="_blank">LinkedIn</a></div>
+          <div style="margin-top:14px"><span class="badge-open">Open to New Opportunities</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="expertise" class="reveal container">
+      <h2 class="section-title">Core Expertise</h2>
+      <div class="grid-6">
+        <div class="card"><h3>Accounting & Reporting</h3><ul class="muted"><li>Financial statements</li><li>Month-end close</li></ul></div>
+        <div class="card"><h3>Tax & Statutory Compliance</h3><ul class="muted"><li>VAT, PAYE, Withholding</li><li>Statutory filings</li></ul></div>
+        <div class="card"><h3>Systems & Software</h3><ul class="muted"><li>ERP, QuickBooks</li><li>Automation & Reconciliations</li></ul></div>
+        <div class="card"><h3>Audit & Risk</h3><ul class="muted"><li>Control design</li><li>Audit coordination</li></ul></div>
+        <div class="card"><h3>Leadership & Strategy</h3><ul class="muted"><li>Team leadership</li><li>Process improvement</li></ul></div>
+        <div class="card"><h3>Sectors of Experience</h3><ul class="muted"><li>NGO, Govt, Fintech, Healthcare</li></ul></div>
+      </div>
+    </section>
+
+    <section id="experience" class="reveal container">
+      <h2 class="section-title">Work Experience</h2>
+      <div class="timeline">
+        <div class="timeline-item card">
+          <div><div class="muted">Mar 2024 – present<br>Sahara Desk Ltd</div></div>
+          <div class="line"></div>
+          <div>
+            <div class="role-badge">Finance & Admin Manager</div>
+            <p class="muted">Leading finance operations, month-end close, cashflow and vendor management.</p>
+            <div class="duty">› Manage cashflow forecasting and supplier settlements.</div>
+            <div class="duty">› Coordinate monthly closing and KPI dashboards.</div>
+            <div style="border-left:4px solid var(--gold);padding-left:12px;margin-top:12px;background:rgba(255,255,255,0.01)">Implemented streamlined reporting processes enhancing financial visibility.</div>
+          </div>
+        </div>
+
+        <div class="timeline-item card">
+          <div><div class="muted">May 2024 – present<br>Sahara Africa Card Solutions</div></div>
+          <div class="line"></div>
+          <div>
+            <div class="role-badge">Part-Time Accountant</div>
+            <p class="muted">Support reconciliation, invoice processing and regulatory compliance.</p>
+            <div class="duty">› Prepare daily and monthly reconciliations for card processing revenue.</div>
+            <div class="duty">› Maintain general ledger entries and journal adjustments.</div>
+            <div style="border-left:4px solid var(--gold);padding-left:12px;margin-top:12px;background:rgba(255,255,255,0.01)">Strengthened reconciliation practices to reduce reporting gaps.</div>
+          </div>
+        </div>
+
+        <div class="timeline-item card">
+          <div><div class="muted">Nov 2022 – Mar 2024<br>Nasio Trust Kenya NGO</div></div>
+          <div class="line"></div>
+          <div>
+            <div class="role-badge">Hospital, Payroll & Project Accountant</div>
+            <p class="muted">Managed project accounting, payroll cycles and donor budgets.</p>
+            <div class="duty">› Administer payroll cycles and ensure accurate staff disbursements.</div>
+            <div class="duty">› Track project costs and grant compliance.</div>
+            <div style="border-left:4px solid var(--gold);padding-left:12px;margin-top:12px;background:rgba(255,255,255,0.01)">Delivered clean audit outcomes through robust controls.</div>
+          </div>
+        </div>
+
+        <div class="timeline-item card">
+          <div><div class="muted">Jan 2022 – Nov 2022<br>KRA Busia OSBP</div></div>
+          <div class="line"></div>
+          <div>
+            <div class="role-badge">Intern & Assistant to Finance Manager</div>
+            <p class="muted">Supported finance manager with document control and process support.</p>
+            <div class="duty">› Assisted with reconciliations and audit prep.</div>
+            <div style="border-left:4px solid var(--gold);padding-left:12px;margin-top:12px;background:rgba(255,255,255,0.01)">Built foundational finance skills within a government environment.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="education" class="reveal container">
+      <h2 class="section-title">Education</h2>
+      <div class="edu-grid">
+        <div class="card"><h3>BBA Second Class Upper</h3><div class="muted">UEAB · 2017–2021</div></div>
+        <div class="card"><h3>CPA Completed / Fully Qualified</h3><div class="muted">KASNEB · 2021–2025</div></div>
+        <div class="card"><h3>QuickBooks & Excel</h3><div class="muted">Distinction · 2021</div></div>
+        <div class="card"><h3>Google Digital Marketing</h3><div class="muted">Certification</div></div>
+        <div class="card"><h3>Computer Packages</h3><div class="muted">Credit</div></div>
+        <div class="card"><h3>KCSE</h3><div class="muted">Migori Boys</div></div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-cta reveal">
+      <div class="container">
+        <h2>Together.</h2>
+        <p class="muted">Available for finance leadership, audit readiness and systems-driven transformation. Reach out to discuss opportunities or collaborations.</p>
+        <div style="margin-top:20px;display:flex;gap:12px;justify-content:center">
+          <a class="btn-gold" href="mailto:clintoniremo@gmail.com">Email</a>
+          <a class="btn-gold" href="tel:+254745313247">Call</a>
+          <a class="btn-gold" href="https://www.linkedin.com/in/clinton-oremo-471813228" target="_blank">LinkedIn</a>
+        </div>
+        <footer style="margin-top:28px;text-align:center;color:rgba(255,255,255,0.2)">© Clinton Oremo Ouma — 2026</footer>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Loader hide after 2s
+    window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loader').style.display='none';},2200)});
+
+    // Cursor logic
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;dot.style.transform=`translate(${mouseX}px,${mouseY}px)`;});
+    function animateRing(){ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12; ring.style.transform=`translate(${ringX}px,${ringY}px)`; requestAnimationFrame(animateRing);} animateRing();
+
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    function onScroll(){ if(window.scrollY>24) nav.classList.add('scrolled'); else nav.classList.remove('scrolled'); }
+    onScroll(); window.addEventListener('scroll',onScroll,{passive:true});
+
+    // IntersectionObserver reveals
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible'); io.unobserve(e.target)}}),{threshold:0.12,rootMargin:'0px 0px -8% 0px'});
+    reveals.forEach((el,i)=>{el.style.transitionDelay = (i*40)+'ms'; io.observe(el)});
+
+    // smooth scroll for nav
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault(); const id=a.getAttribute('href'); if(id==='#') return; document.querySelector(id).scrollIntoView({behavior:'smooth'});});});
+
+    // image fallback note: if user uploaded a real profile.jpg in repo it will show; otherwise the inline placeholder is used.
+  </script>
+</body>
+</html>
