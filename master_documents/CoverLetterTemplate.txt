@@ -1,0 +1,14 @@
+{{SENDER_NAME}}
+{{SENDER_EMAIL}} | {{SENDER_PHONE}}
+{{SENDER_LOCATION}} | {{DATE}}
+
+{{COMPANY}}
+
+Dear Hiring Manager,
+
+I am excited to apply for the {{TITLE}} position at {{COMPANY}}. {{MATCHED_SKILLS}}
+
+Thank you for your consideration.
+
+Sincerely,
+{{SENDER_NAME}}

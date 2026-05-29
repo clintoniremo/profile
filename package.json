@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dashboard": "node autonomous_hunter.js --dashboard"
+  },
+  "dependencies": {
+    "nodemailer": "^8.0.10"
+  }
+}
