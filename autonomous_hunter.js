@@ -16,7 +16,8 @@
  *   npm install nodemailer puppeteer
  */
 
-const https = require('https');
+// Load environment variables from a .env file (if present)
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 
@@ -31,19 +32,19 @@ const CONFIG = {
   adzunaAppId: '',   // Register at developer.adzuna.com for real-time live queries
   adzunaAppKey: '',
 
-  // SMTP Gmail configuration (Set up an App Password: Google Account -> Security -> App Passwords)
+  // SMTP Gmail configuration (use App Password or OAuth2 via env vars)
   smtp: {
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    user: 'your-email@gmail.com', // Enter your Gmail
-    pass: 'xxxx xxxx xxxx xxxx',   // Enter your 16-character App Password
-    fromName: 'Clinton Oremo Ouma'
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
+    secure: process.env.SMTP_SECURE === 'true', // true for 465, false otherwise
+    user: process.env.SMTP_USER || 'your-email@gmail.com', // Gmail address
+    pass: process.env.SMTP_PASS || 'xxxx xxxx xxxx xxxx',   // 16‑character App Password
+    fromName: process.env.SMTP_FROM_NAME || 'Clinton Oremo Ouma'
   },
-  
+
   // Destination email where applications or notification digests are dispatched
-  recipientEmail: 'clintoniremo@gmail.com', 
-  alertEmail: 'clintoniremo@gmail.com' // Send confirmation alerts here
+  recipientEmail: process.env.RECIPIENT_EMAIL || 'clintoniremo@gmail.com',
+  alertEmail: process.env.ALERT_EMAIL || 'clintoniremo@gmail.com' // Send confirmation alerts here
 };
 
 // Profile Database (Loaded from index.html elements dynamically where possible)
@@ -259,8 +260,6 @@ async function main() {
     console.error(`💥 [CRITICAL ERROR] Job hunt run failed:`, error);
   }
 }
-
-// ==================== 1. PROFILE VAULT SYNCHRONIZER ====================
 
 // ==================== 1. PROFILE VAULT SYNCHRONIZER ====================
 
@@ -486,87 +485,6 @@ async function draftApplicationDocuments(job, rating) {
     fs.mkdirSync(appFolderPath, { recursive: true });
   }
 
-  // Attempt to load uploaded CV/cover if they exist in a predefined uploads folder
-  const uploadsDir = path.join(__dirname, 'uploads');
-  const uploadedCV = path.join(uploadsDir, `${safeCompanyName}_CV.html`);
-  const uploadedCover = path.join(uploadsDir, `${safeCompanyName}_Cover.txt`);
-
-  let coverLetterPath, cvPath;
-  if (fs.existsSync(uploadedCV) && fs.existsSync(uploadedCover)) {
-    // Use uploaded assets directly
-    coverLetterPath = uploadedCover;
-    cvPath = uploadedCV;
-    console.log(`   📂 [AI] Using uploaded CV and Cover Letter for ${job.company}`);
-    // Copy to application folder
-    const destCover = path.join(appFolderPath, 'CoverLetter.txt');
-    const destCv = path.join(appFolderPath, 'Tailored_CV.html');
-    fs.copyFileSync(coverLetterPath, destCover);
-    fs.copyFileSync(cvPath, destCv);
-  } else {
-    // Generate assets via AI
-    console.log(`   🤖 [AI] Generating CV and Cover Letter via OpenAI for ${job.company}`);
-    try {
-      const { coverLetter, htmlCv } = await generateDocs(job, rating, PROFILE);
-      coverLetterPath = path.join(appFolderPath, 'CoverLetter.txt');
-      cvPath = path.join(appFolderPath, 'Tailored_CV.html');
-      fs.writeFileSync(coverLetterPath, coverLetter, 'utf8');
-      fs.writeFileSync(cvPath, htmlCv, 'utf8');
-    } catch (aiErr) {
-      console.log(`   ⚠️ [AI] Generation failed: ${aiErr.message}. Falling back to template generation.`);
-      // Fallback to existing template generation (same as original implementation)
-      const matchedSkillsText = rating.matches.length > 0 
-        ? `Specifically, my experience aligns with your requirement for: ${rating.matches.slice(0, 6).join(', ')}.` 
-        : 'Specifically, my experience covers core ledger management, tax computations, QuickBooks integrations, and statutory compliance.';
-      const coverLetter = `${PROFILE.name}, ${PROFILE.email},
-${PROFILE.linkedin}
-${PROFILE.phone}
-${PROFILE.location}. ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-
-To,
-Human Resource Manager.
-
-Dear Sir/Madam,
-
-RE: APPLICATION FOR THE POSITION OF A ${job.title.toUpperCase()}
-
-I am writing to express my interest ...`;
-      // (Truncated for brevity; you can copy the original template here if needed)
-      coverLetterPath = path.join(appFolderPath, 'CoverLetter.txt');
-      fs.writeFileSync(coverLetterPath, coverLetter, 'utf8');
-      // For CV, reuse original HTML template generation logic (simplified)
-      const htmlCv = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:'Arial',sans-serif;color:#333;line-height:1.5;padding:30px;background:#fff}.header{border-bottom:2px solid #c8a96e;padding-bottom:15px;margin-bottom:20px}.name{font-size:26px;font-weight:bold;color:#111;text-transform:uppercase;margin:0}.title{font-size:15px;color:#c8a96e;font-weight:600;margin:5px 0 0 0}.contact{font-size:12px;color:#666;margin-top:8px}.contact a{color:#666;text-decoration:none}.section-title{font-size:16px;font-weight:bold;color:#111;border-bottom:1px solid #eee;padding-bottom:5px;margin:25px 0 10px 0;text-transform:uppercase}</style></head><body><div class="header"><div class="name">${PROFILE.name}</div><div class="title">${PROFILE.title}</div><div class="contact">${PROFILE.phone} | <a href="mailto:${PROFILE.email}">${PROFILE.email}</a> | ${PROFILE.location}<br>Portfolio: <a href="${PROFILE.portfolio}">${PROFILE.portfolio}</a> | Credentials Wallet: <a href="${PROFILE.wallet}">${PROFILE.wallet}</a></div></div></body></html>`;
-      cvPath = path.join(appFolderPath, 'Tailored_CV.html');
-      fs.writeFileSync(cvPath, htmlCv, 'utf8');
-    }
-  }
-
-  // New Advanced Feature: Compile high-fidelity PDF CV dynamically using Puppeteer!
-  const pdfPath = path.join(appFolderPath, 'Clinton_Oremo_CV.pdf');
-  const pdfGenerated = await compilePdfFromHtml(cvPath, pdfPath);
-
-  // C. Save a text metadata summary of the application
-  const metadata = {
-    jobTitle: job.title,
-    company: job.company,
-    url: job.url,
-    ratingScore: rating.score,
-    matches: rating.matches,
-    pdfCompiled: pdfGenerated,
-    appliedAt: new Date().toISOString()
-  };
-  fs.writeFileSync(path.join(appFolderPath, 'metadata.json'), JSON.stringify(metadata, null, 2), 'utf8');
-
-  return { coverLetterPath, cvPath, pdfPath: pdfGenerated ? pdfPath : null };
-}
-  const safeCompanyName = job.company.replace(/[^a-zA-Z0-9]/g, '_');
-  const safeJobTitle = job.title.replace(/[^a-zA-Z0-9]/g, '_');
-  const folderName = `App_${safeCompanyName}_${safeJobTitle}`;
-  const appFolderPath = path.join(OUT_DIR, folderName);
-
-  if (!fs.existsSync(appFolderPath)) {
-    fs.mkdirSync(appFolderPath, { recursive: true });
-  }
-
   // A. Generate Custom Tailored Cover Letter
   const matchedSkillsText = rating.matches.length > 0 
     ? `Specifically, my experience aligns with your requirement for: ${rating.matches.slice(0, 6).join(', ')}.` 
@@ -783,14 +701,12 @@ ${PROFILE.phone} | ${PROFILE.email}`;
   try {
     nodemailer = require('nodemailer');
   } catch (e) {
-    // If nodemailer is not installed, output simulated logs
     console.log(`[SIMULATION] Nodemailer is not installed. Application packet drafted in:`);
     console.log(`  📂 Location: ${path.dirname(paths.cvPath)}`);
     console.log(`  📧 Recipient: ${CONFIG.recipientEmail}`);
     console.log(`  📝 Subject: ${emailSubject}`);
     console.log(`  📎 Attached: Tailored_CV.html, CoverLetter.txt`);
     console.log(`  🔗 Links Included: Portfolio (${PROFILE.portfolio}), Wallet (${PROFILE.wallet})`);
-    console.log(`  (To send actual emails, run: npm install nodemailer and configure SMTP in CONFIG)\n`);
     return;
   }
 
@@ -799,8 +715,9 @@ ${PROFILE.phone} | ${PROFILE.email}`;
   let fromAddress = `"${CONFIG.smtp.fromName}" <${CONFIG.smtp.user}>`;
   let isEthereal = false;
 
-  if (CONFIG.smtp.user === 'your-email@gmail.com') {
-    console.log(`[SMTP] Default SMTP credentials detected. Dynamically generating a free Ethereal Email test account...`);
+  const isPlaceholder = CONFIG.smtp.user.includes('your-email@gmail.com') || CONFIG.smtp.user === '' || CONFIG.smtp.pass.includes('xxxx');
+  if (isPlaceholder) {
+    console.log(`[SMTP] Placeholder credentials detected. Generating Ethereal test account...`);
     try {
       const testAccount = await nodemailer.createTestAccount();
       transporter = nodemailer.createTransport({
@@ -814,11 +731,10 @@ ${PROFILE.phone} | ${PROFILE.email}`;
       });
       fromAddress = `"${CONFIG.smtp.fromName}" <${testAccount.user}>`;
       isEthereal = true;
-      console.log(`[SMTP] Ethereal test account created successfully: ${testAccount.user}`);
+      console.log(`[SMTP] Ethereal test account created: ${testAccount.user}`);
     } catch (e) {
-      console.log(`[SMTP] Could not generate test account: ${e.message}. Falling back to simulation mode.`);
-      console.log(`  🚀 Email drafted successfully for: ${job.company}`);
-      console.log(`  📂 Attachments logged locally at ${path.dirname(paths.cvPath)}\n`);
+      console.error(`[SMTP] Failed to create Ethereal test account: ${e.message}`);
+      console.log('   📧 Email dispatch skipped. Run `npm install nodemailer` and set real SMTP credentials in .env to send emails.');
       return;
     }
   } else {

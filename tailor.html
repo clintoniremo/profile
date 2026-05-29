@@ -1389,6 +1389,110 @@
 
     </div>
 
+    <!-- Upload Panel -->
+    <div class="panel" style="background: rgba(255,255,255,0.02); border-color: rgba(14,165,233,0.15);">
+      <div class="panel-header">
+        <h2>Upload CV & Cover Letter</h2>
+        <span style="background:rgba(14,165,233,0.15)">CUSTOM INPUT</span>
+      </div>
+      <div class="form-group">
+        <label for="cvUpload">Upload CV (PDF)</label>
+        <input type="file" id="cvUpload" accept="application/pdf" />
+      </div>
+      <div class="form-group">
+        <label for="coverUpload">Upload Cover Letter (TXT/MD)</label>
+        <input type="file" id="coverUpload" accept=".txt,.md" />
+      </div>
+      <button class="btn-action" id="processUploadBtn" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5v14m7-7H5"/></svg>
+        Generate Drafts
+      </button>
+    </div>
+    
+    <!-- Include jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-6F6Z6nV4aYKLni1VT/Z9qkpVVgVPOX+X/0N/2ZRohl/ZwWyqv0JQcIPCLXWc5Q46ps5zddgMfhzVjIfUUnP6xw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script>
+      // File handling for CV and Cover Letter
+      const cvInput = document.getElementById('cvUpload');
+      const coverInput = document.getElementById('coverUpload');
+      const processBtn = document.getElementById('processUploadBtn');
+      let cvFileData = null;
+      let coverText = '';
+
+      function enableProcess() {
+        if (cvFileData && coverText) {
+          processBtn.disabled = false;
+        } else {
+          processBtn.disabled = true;
+        }
+      }
+
+      cvInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const arrayBuffer = await file.arrayBuffer();
+          cvFileData = new Uint8Array(arrayBuffer);
+        } else {
+          cvFileData = null;
+        }
+        enableProcess();
+      });
+
+      coverInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const text = await file.text();
+          coverText = text;
+          document.getElementById('clTextarea').value = coverText;
+        } else {
+          coverText = '';
+          document.getElementById('clTextarea').value = '';
+        }
+        enableProcess();
+      });
+
+      processBtn.addEventListener('click', async () => {
+        // Simple preview: render PDF bytes as object URL in CV preview area
+        if (cvFileData) {
+          const blob = new Blob([cvFileData], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          const cvContainer = document.getElementById('cvContainer');
+          cvContainer.innerHTML = `<embed src="${url}" type="application/pdf" width="100%" height="400px"/>`;
+        }
+        // Cover letter already populated above.
+        // Enable PDF download button (already present)
+        // Optionally, show a toast
+        alert('CV preview loaded and cover letter populated. You can now download the CV as PDF or send the application.');
+      });
+
+      // Override existing downloadCvAsPdf to capture the previewed PDF (if any) or fallback to CV preview HTML
+      async function downloadCvAsPdf() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'pt', 'a4');
+        const cvContainer = document.getElementById('cvContainer');
+        if (cvContainer.innerHTML.includes('embed')) {
+          // If an embed exists, just download the original PDF file
+          const embed = cvContainer.querySelector('embed');
+          const src = embed.getAttribute('src');
+          const a = document.createElement('a');
+          a.href = src;
+          a.download = 'Tailored_CV.pdf';
+          a.click();
+          return;
+        }
+        // Fallback: render the HTML content as PDF
+        const html = cvContainer.innerHTML;
+        doc.html(html, {
+          callback: function (doc) {
+            doc.save('Tailored_CV.pdf');
+          },
+          x: 20,
+          y: 20
+        });
+      }
+    </script>
+
     <section class="history-section">
       <div class="panel">
         <div class="panel-header">
