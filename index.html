@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinton Oremo Ouma | Finance & Accounting Professional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f4ef;
+      color: #0d1117;
+      line-height: 1.75;
+      font-size: 16px;
+      --ink: #0d1117;
+      --paper: #f7f4ef;
+      --gold: #c9a84c;
+      --gold-soft: rgba(201,168,76,0.15);
+      --dark: #111111;
+      --surface: rgba(13,17,23,0.04);
+      --shadow: 0 35px 80px rgba(13,17,23,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, rgba(201,168,76,0.12), transparent 32%), #f7f4ef;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 24px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 120px 32px 80px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 18px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(247,244,239,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(13,17,23,0.08);
+      z-index: 10;
+    }
+
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a {
+      color: var(--ink);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a:focus-visible::after {
+      width: 100%;
+    }
+
+    header {
+      display: grid;
+      gap: 32px;
+      padding-top: 24px;
+      animation: fadeInUp 0.9s ease both;
+    }
+
+    .hero {
+      display: grid;
+      gap: 28px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 5vw, 4.6rem);
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+    }
+
+    .hero p.lead {
+      max-width: 720px;
+      margin: 0;
+      font-size: 1.075rem;
+      color: rgba(13,17,23,0.82);
+    }
+
+    .hero .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(201,168,76,0.15);
+      color: var(--ink);
+      font-weight: 500;
+      width: fit-content;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.84rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(13,17,23,0.08);
+      border-radius: 20px;
+      padding: 24px 22px;
+      box-shadow: var(--shadow);
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stat-card strong {
+      font-size: 2rem;
+      line-height: 1;
+      display: block;
+      margin-bottom: 10px;
+      color: var(--dark);
+      font-family: 'Playfair Display', serif;
+    }
+
+    .stat-card span {
+      font-size: 0.95rem;
+      color: rgba(13,17,23,0.78);
+    }
+
+    section {
+      margin-top: 72px;
+      animation: fadeInUp 0.9s ease both;
+    }
+
+    section h2 {
+      margin: 0 0 18px;
+      font-family: 'Playfair Display', serif;
+      font-size: 2.15rem;
+      letter-spacing: -0.04em;
+    }
+
+    .section-intro {
+      max-width: 760px;
+      color: rgba(13,17,23,0.8);
+      margin-bottom: 24px;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 28px;
+    }
+
+    .about-grid p {
+      margin-top: 0;
+      margin-bottom: 18px;
+    }
+
+    .contact-card {
+      background: #fff;
+      border: 1px solid rgba(13,17,23,0.08);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .contact-card h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .contact-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0;
+      display: grid;
+      gap: 14px;
+    }
+
+    .contact-list li {
+      display: grid;
+      gap: 6px;
+    }
+
+    .contact-list a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .dark-panel {
+      background: #111111;
+      color: #f7f4ef;
+      padding: 48px 36px;
+      border-radius: 32px;
+      overflow: hidden;
+    }
+
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+    }
+
+    .skill-group {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 24px;
+      min-height: 190px;
+    }
+
+    .skill-group h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+
+    .skill-group p {
+      margin: 0;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.96rem;
+    }
+
+    .experience-list {
+      display: grid;
+      gap: 26px;
+    }
+
+    .role-card {
+      background: #fff;
+      border: 1px solid rgba(13,17,23,0.08);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .role-title {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: baseline;
+    }
+
+    .role-title h3 {
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+    }
+
+    .role-meta {
+      color: rgba(13,17,23,0.72);
+      font-size: 0.93rem;
+    }
+
+    .role-card p {
+      margin: 18px 0 22px;
+      color: rgba(13,17,23,0.82);
+    }
+
+    .role-list {
+      margin: 0;
+      padding-left: 20px;
+      color: rgba(13,17,23,0.8);
+    }
+
+    .role-list li {
+      margin-bottom: 10px;
+      padding-right: 12px;
+    }
+
+    .achievement {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--gold-soft);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 15px 18px;
+      font-size: 0.96rem;
+      border: 1px solid rgba(201,168,76,0.16);
+      margin-top: 14px;
+    }
+
+    .education-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+    }
+
+    .education-card {
+      background: #fff;
+      border: 1px solid rgba(13,17,23,0.08);
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      min-height: 160px;
+    }
+
+    .education-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .education-card p {
+      margin: 0;
+      color: rgba(13,17,23,0.78);
+      font-size: 0.95rem;
+    }
+
+    .contact-section {
+      padding: 48px 0 24px;
+    }
+
+    .contact-panel {
+      background: #111111;
+      color: #f7f4ef;
+      padding: 44px 36px;
+      border-radius: 32px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .contact-panel h2,
+    .contact-panel p {
+      color: #f7f4ef;
+    }
+
+    .contact-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .contact-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 180px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .contact-buttons a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.16);
+    }
+
+    .btn-email { background: #f7f4ef; color: var(--ink); }
+    .btn-phone { background: transparent; color: #f7f4ef; border-color: rgba(255,255,255,0.22); }
+    .btn-linkedin { background: rgba(201,168,76,0.16); color: #f7f4ef; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      .page-wrap { padding: 110px 24px 72px; }
+      .about-grid { grid-template-columns: 1fr; }
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 16px; }
+    }
+
+    @media (max-width: 680px) {
+      .page-wrap { padding: 100px 18px 64px; }
+      nav { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .contact-buttons { flex-direction: column; }
+      .hero h1 { font-size: 2.9rem; }
+      .role-title { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="brand">Clinton Oremo Ouma</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <header>
+      <div class="hero">
+        <span class="eyebrow">Finance & Accounting Professional</span>
+        <h1>Clinton Oremo Ouma</h1>
+        <p class="lead">Nairobi-based accounting leader with a refined editorial approach to financial reporting, compliance, audit readiness, and operational excellence.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <strong>4+ Years</strong>
+          <span>Experience in finance and accounting leadership</span>
+        </div>
+        <div class="stat-card">
+          <strong>6+ Sectors</strong>
+          <span>Served across NGO, hospitality, payroll, retail, services, and government</span>
+        </div>
+        <div class="stat-card">
+          <strong>4</strong>
+          <span>Clean audit reports delivered with risk-focused precision</span>
+        </div>
+        <div class="stat-card">
+          <strong>CPA</strong>
+          <span>Fully qualified accounting professional with practical systems expertise</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="about">
+      <h2>About</h2>
+      <div class="about-grid">
+        <div>
+          <p>Clinton blends practical accounting discipline with business insight to support scalable operations in Nairobi and beyond. His work centers on delivering reliable financial information, safeguarding compliance, and enabling stronger decision-making.</p>
+          <p>Through active collaboration with audit teams, tax advisors, and operations leaders, he creates straightforward processes that preserve transparency and build resilience for growing organisations.</p>
+        </div>
+        <aside class="contact-card">
+          <h3>Contact</h3>
+          <ul class="contact-list">
+            <li><strong>Location</strong><span>Nairobi, Kenya</span></li>
+            <li><strong>Phone</strong><a href="tel:+254745313247">+254 745 313 247</a></li>
+            <li><strong>Email</strong><a href="mailto:clintoniremo@gmail.com">clintoniremo@gmail.com</a></li>
+            <li><strong>LinkedIn</strong><a href="https://www.linkedin.com/in/clinton-oremo-471813228" target="_blank" rel="noreferrer">clinton-oremo-471813228</a></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section id="skills">
+      <h2>Skills</h2>
+      <div class="dark-panel">
+        <div class="skill-grid">
+          <div class="skill-group">
+            <h3>Accounting & Reporting</h3>
+            <p>Financial statement preparation, management reporting, month-end close, budgeting and variance analysis.</p>
+          </div>
+          <div class="skill-group">
+            <h3>Tax & Compliance</h3>
+            <p>VAT, PAYE, withholding tax, statutory filings and regulatory controls for Kenyan tax frameworks.</p>
+          </div>
+          <div class="skill-group">
+            <h3>Systems & Software</h3>
+            <p>QuickBooks, Excel modelling, ERP integration, automated reconciliations and digital process optimisation.</p>
+          </div>
+          <div class="skill-group">
+            <h3>Audit & Risk</h3>
+            <p>Audit readiness, control design, risk monitoring and stakeholder coordination for smooth review cycles.</p>
+          </div>
+          <div class="skill-group">
+            <h3>Leadership & Management</h3>
+            <p>Team development, performance oversight, cross-functional collaboration and resource planning.</p>
+          </div>
+          <div class="skill-group">
+            <h3>Sectors of Experience</h3>
+            <p>Hospitality, NGO, payroll, project accounting, finance services and government operations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <h2>Experience</h2>
+      <div class="experience-list">
+        <article class="role-card">
+          <div class="role-title">
+            <h3>Finance & Admin Manager</h3>
+            <span class="role-meta">Sahara Desk Ltd · Mar 2024 – present</span>
+          </div>
+          <p>Leading finance operations with a focus on management control, vendor oversight, and accurate monthly reporting.</p>
+          <ul class="role-list">
+            <li>Manage cashflow forecasting, supplier settlements and expense controls.</li>
+            <li>Coordinate monthly closing, variance analysis and KPI dashboards.</li>
+            <li>Support administrative workflows and company compliance deliverables.</li>
+          </ul>
+          <div class="achievement">Implemented streamlined reporting processes that enhanced financial visibility.</div>
+        </article>
+
+        <article class="role-card">
+          <div class="role-title">
+            <h3>Part-Time Accountant</h3>
+            <span class="role-meta">Sahara Africa Card Solutions · May 2024 – present</span>
+          </div>
+          <p>Provide analytical accounting support for reconciliation, invoice processing and regulatory compliance.</p>
+          <ul class="role-list">
+            <li>Prepare daily and monthly reconciliations for card processing revenue and expenses.</li>
+            <li>Support tax filing preparation and accounts payable review.</li>
+            <li>Maintain accurate general ledger entries and journal adjustments.</li>
+          </ul>
+          <div class="achievement">Strengthened reconciliation practices to reduce reporting gaps.</div>
+        </article>
+
+        <article class="role-card">
+          <div class="role-title">
+            <h3>Hospital, Payroll & Project Accountant</h3>
+            <span class="role-meta">Nasio Trust Kenya NGO · Nov 2022 – Mar 2024</span>
+          </div>
+          <p>Managed multi-dimensional accounting across health, payroll and donor-funded project activities.</p>
+          <ul class="role-list">
+            <li>Administer payroll cycles and ensure accurate staff disbursements.</li>
+            <li>Track project costs, donor budgets and grant compliance.</li>
+            <li>Prepare financial reports for internal stakeholders and audit review.</li>
+          </ul>
+          <div class="achievement">Delivered clean audit outcomes through robust project accounting controls.</div>
+        </article>
+
+        <article class="role-card">
+          <div class="role-title">
+            <h3>Intern & Assistant to Finance Manager</h3>
+            <span class="role-meta">Kenya Revenue Authority, Busia OSBP · Jan 2022 – Nov 2022</span>
+          </div>
+          <p>Assisted the finance manager in operational tasks, document control, and financial process support.</p>
+          <ul class="role-list">
+            <li>Supported cash handling, record maintenance and compliance documentation.</li>
+            <li>Assisted with reconciliations, budget monitoring and audit preparation.</li>
+            <li>Helped implement process improvements for day-to-day financial activities.</li>
+          </ul>
+          <div class="achievement">Built foundational finance skills within a high-volume government environment.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="education">
+      <h2>Education</h2>
+      <div class="education-grid">
+        <article class="education-card">
+          <h3>BBA Second Class Upper</h3>
+          <p>University of Eastern Africa, Baraton</p>
+        </article>
+        <article class="education-card">
+          <h3>CPA Completed</h3>
+          <p>KASNEB Certified Professional Accountant</p>
+        </article>
+        <article class="education-card">
+          <h3>QuickBooks & Excel</h3>
+          <p>Distinction in advanced accounting software and spreadsheet modelling.</p>
+        </article>
+        <article class="education-card">
+          <h3>Google Digital Marketing</h3>
+          <p>Practical certification in digital presence, analytics and business communication.</p>
+        </article>
+        <article class="education-card">
+          <h3>Computer Packages</h3>
+          <p>Credit level proficiency in core business software packages.</p>
+        </article>
+        <article class="education-card">
+          <h3>KCSE</h3>
+          <p>Migori Boys High School</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <div class="contact-panel">
+        <h2>Let's connect</h2>
+        <p>For finance leadership, audit readiness, or systems-driven accounting support, reach out to begin a conversation.</p>
+        <div class="contact-buttons">
+          <a class="btn-email" href="mailto:clintoniremo@gmail.com">Email Clinton</a>
+          <a class="btn-phone" href="tel:+254745313247">Call +254 745 313 247</a>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/clinton-oremo-471813228" target="_blank" rel="noreferrer">View LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
