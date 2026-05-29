@@ -4,6 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Clinton Oremo Ouma | Finance & Accounting Professional</title>
+  <meta name="description" content="Certified Public Accountant (CPA) with 5+ years of experience in finance, NGO project accounting, taxation (KRA compliance), internal audit, and systems-driven operations." />
+  <meta name="keywords" content="Clinton Oremo Ouma, Clinton Oremo, CPA, Accountant Nairobi, Accountant Kenya, Finance Manager Kenya, KASNEB CPA, Nasio Trust, Sahara Desk, Accounting Systems, Tax Compliance Kenya" />
+  <meta name="author" content="Clinton Oremo Ouma" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://profile-tau-weld.vercel.app/" />
+  <meta property="og:title" content="Clinton Oremo Ouma | Finance & Accounting Professional" />
+  <meta property="og:description" content="Certified Public Accountant (CPA) with 5+ years of experience in finance, NGO project accounting, taxation (KRA compliance), internal audit, and systems-driven operations." />
+  <meta property="og:image" content="https://profile-tau-weld.vercel.app/profile.jpg" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://profile-tau-weld.vercel.app/" />
+  <meta property="twitter:title" content="Clinton Oremo Ouma | Finance & Accounting Professional" />
+  <meta property="twitter:description" content="Certified Public Accountant (CPA) with 5+ years of experience in finance, NGO project accounting, taxation (KRA compliance), internal audit, and systems-driven operations." />
+  <meta property="twitter:image" content="https://profile-tau-weld.vercel.app/profile.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -117,9 +135,22 @@
 
     .hero {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.3fr 1fr;
       gap: 48px;
       align-items: start;
+    }
+
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      animation: fadeInUp 0.9s ease both;
     }
 
     .hero-content {
@@ -176,6 +207,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 18px;
+      animation: fadeInUp 0.9s ease both;
     }
 
     .stat-card {
@@ -210,7 +242,7 @@
     }
 
     section#about {
-      margin-top: 36px;
+      margin-top: 0;
     }
 
     section h2 {
@@ -226,15 +258,15 @@
       margin-bottom: 24px;
     }
 
-    .about-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 28px;
-    }
-
-    .about-grid p {
+    #about p,
+    .about-extended p {
       margin-top: 0;
       margin-bottom: 18px;
+    }
+
+    .about-extended {
+      margin-top: 48px;
+      animation: fadeInUp 0.9s ease both;
     }
 
     .contact-card {
@@ -438,6 +470,73 @@
     .btn-email { background: #f7f4ef; color: var(--ink); }
     .btn-phone { background: transparent; color: #f7f4ef; border-color: rgba(255,255,255,0.22); }
     .btn-linkedin { background: rgba(201,168,76,0.16); color: #f7f4ef; }
+    .btn-whatsapp { background: #25d366; color: #fff; }
+    .btn-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+    
+    /* Floating Contact Actions */
+    .floating-contact {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .floating-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(13,17,23,0.15);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .floating-btn:hover {
+      transform: scale(1.1) translateY(-4px);
+      box-shadow: 0 12px 28px rgba(13,17,23,0.25);
+    }
+
+    .whatsapp-float {
+      background: #25d366;
+    }
+
+    .phone-float {
+      background: #c9a84c;
+    }
+
+    .floating-btn svg {
+      width: 26px;
+      height: 26px;
+      fill: currentColor;
+    }
+
+    @media (max-width: 680px) {
+      .floating-contact {
+        bottom: 16px;
+        right: 16px;
+        gap: 10px;
+      }
+      .floating-btn {
+        width: 48px;
+        height: 48px;
+      }
+      .floating-btn svg {
+        width: 22px;
+        height: 22px;
+      }
+    }
 
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(18px); }
@@ -446,11 +545,16 @@
 
     @media (max-width: 900px) {
       .page-wrap { padding: 110px 24px 72px; }
-      .about-grid { grid-template-columns: 1fr; }
       nav { padding: 16px 24px; }
       .nav-links { gap: 16px; }
       .hero { grid-template-columns: 1fr; gap: 32px; }
-      .hero-image { max-width: 320px; }
+      .left-col { display: contents; }
+      .right-col { display: contents; }
+      header { order: 1; }
+      .stats-grid { order: 2; }
+      .hero-image { order: 3; max-width: 320px; }
+      section#about { order: 4; margin-top: 0; }
+      .contact-card { order: 5; }
     }
 
     @media (max-width: 680px) {
@@ -467,94 +571,100 @@
   <nav>
     <div class="brand">Clinton Oremo Ouma</div>
     <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#skills">Skills</a>
-      <a href="#experience">Experience</a>
-      <a href="#education">Education</a>
-      <a href="#contact">Contact</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#skills">Skills</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="wallet.html">Wallet</a>
+      <a href="tailor.html">AI Matcher</a>
+      <a href="index.html#contact">Contact</a>
     </div>
   </nav>
 
   <main class="page-wrap">
-    <header>
-      <div class="hero">
-        <div class="hero-content">
-          <div>
-            <span class="eyebrow">Finance & Accounting Professional</span>
-            <h1>Clinton Oremo Ouma</h1>
-          </div>
+    <div class="hero">
+      
+      <div class="left-col">
+        <header>
+          <span class="eyebrow">Finance & Accounting Professional</span>
+          <h1>Clinton Oremo Ouma</h1>
+        </header>
 
-          <div class="stats-grid">
-            <div class="stat-card">
-              <strong>4+ Years</strong>
-              <span>Experience in finance and accounting, management, system development, internal audit</span>
-            </div>
-            <div class="stat-card">
-              <strong>6+ Sectors</strong>
-              <span>Served across NGO, hospitality, payroll, retail, services, and government</span>
-            </div>
-            <div class="stat-card">
-              <strong>4</strong>
-              <span>Clean audit reports delivered with risk-focused precision</span>
-            </div>
-            <div class="stat-card">
-              <strong>CPA</strong>
-              <span>Fully qualified accounting professional with practical systems expertise</span>
-            </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <strong>4+ Years</strong>
+            <span>Experience in finance and accounting, management, system development, internal audit</span>
+          </div>
+          <div class="stat-card">
+            <strong>6+ Sectors</strong>
+            <span>Served across NGO, hospitality, payroll, retail, services, and government</span>
+          </div>
+          <div class="stat-card">
+            <strong>4</strong>
+            <span>Clean audit reports delivered with risk-focused precision</span>
+          </div>
+          <div class="stat-card">
+            <strong>CPA</strong>
+            <span>Fully qualified accounting professional with practical systems expertise</span>
           </div>
         </div>
-        <div class="hero-image">
-          <img src="profile.jpg" alt="Clinton Oremo Ouma" />
-        </div>
-      </div>
-    </header>
 
-    <section id="about">
-      <h2>Professional Profile</h2>
-      <div class="about-grid">
+        <section id="about">
+          <h2>Professional Profile</h2>
         <div>
-          <p>I am a dedicated, results-oriented accounting and finance professional holding a Bachelor’s Degree in Business Administration (Accounting Option) and currently a Certified Public Accountant (CPA) Finalist. My academic background is complemented by specialized training in financial management, taxation, statutory compliance within Kenya and the East African region, and extensive practical expertise in modern accounting systems and financial operations.</p>
+          <p>I am a dedicated, results-oriented accounting and finance professional holding a Bachelor’s Degree in Business Administration (Accounting Option) and Certified Public Accountant CPA. My academic background is complemented by specialized training in financial management, taxation, statutory compliance within Kenya and the East African region, and extensive practical expertise in modern accounting systems and financial operations.</p>
           <p>With over four years of progressive experience in accounting, auditing, investments, payroll management, and financial leadership, I have successfully worked across diverse sectors including government parastatals, NGOs, healthcare institutions, financial institutions, real estate, technology companies, and SMEs. This broad exposure has significantly strengthened my analytical, technical, leadership, and stakeholder engagement capabilities.</p>
           <p>Throughout my career, I have consistently demonstrated strong financial stewardship, strategic leadership, and operational excellence. I have successfully spearheaded external financial reconstructions, strengthened internal accounting controls, managed payroll and statutory compliance functions, and contributed to the achievement of four consecutive clean audit reports.</p>
-          <p>My strength and competence are below supported</p>
-          <ul>
-            <li><strong>Financial reporting & analysis</strong> — IAS 1 <em>Presentation of Financial Statements</em> and IFRS 18 <em>Presentation and Disclosure in Financial Statements</em>: preparation of structured, compliant financial statements with proper classification of income, expenses, assets, and liabilities.</li>
-            <li><strong>Accounting for financial instruments</strong> — IFRS 9 <em>Financial Instruments</em>: recognition, classification, measurement, impairment (Expected Credit Loss model), and derecognition of financial assets and liabilities including trade receivables and investments.</li>
-            <li><strong>Accounts payable & receivable management</strong> — IFRS 15 <em>Revenue from Contracts with Customers</em> (AR) and IAS 37 <em>Provisions, Contingent Liabilities and Contingent Assets</em> (AP): accurate recognition of revenue and obligations, management of aging schedules, and timely settlement of payables.</li>
-            <li><strong>Payroll administration & statutory remittances</strong> — IAS 19 <em>Employee Benefits</em>: recognition and measurement of short-term employee benefits, accruals, and defined contribution obligations including NSSF, NHIF, PAYE, NITA, HELB, and WHT in line with Kenyan statutory requirements.</li>
-            <li><strong>Ledger reconciliation & accurate financial posting</strong> — IAS 8 <em>Accounting Policies, Changes in Accounting Estimates and Errors</em>: consistent application of accounting policies, correction of prior period errors, and maintenance of accurate ledger balances through regular reconciliation.</li>
-            <li><strong>Tax compliance & advisory</strong> — IAS 12 <em>Income Taxes</em>: recognition and measurement of current and deferred tax liabilities and assets, accurate tax computations, and compliance with Kenya Revenue Authority requirements including VAT, corporate tax, and withholding tax.</li>
-            <li><strong>Budgeting & financial planning</strong> — IAS 1 <em>Presentation of Financial Statements</em> and IAS 34 <em>Interim Financial Reporting</em>: preparation of forward-looking financial plans, variance analysis between budget and actuals, and interim period reporting to support management decision-making.</li>
-            <li><strong>ERP systems & accounting software management</strong> — ISAE 3402 <em>Assurance Reports on Controls at a Service Organisation</em> and IAS 8: ensuring that accounting systems (QuickBooks, Zoho Books, ERP, Manager.io) apply consistent accounting policies, maintain an auditable trail, and produce reliable financial outputs.</li>
-            <li><strong>Internal controls & audit support</strong> — ISA 315 <em>Identifying and Assessing the Risks of Material Misstatement</em> and ISA 265 <em>Communicating Deficiencies in Internal Control</em>: design and monitoring of internal controls to prevent misstatement, support of external auditors, and remediation of control weaknesses.</li>
-            <li><strong>Data analysis, reporting & presentation</strong> — IFRS 18 <em>Presentation and Disclosure in Financial Statements</em> and IAS 1: preparation of management reports, financial dashboards, and disclosures that communicate performance clearly to stakeholders in a structured, decision-useful format.</li>
-            <li><strong>Leadership, team coordination & stakeholder management</strong> — IAS 24 <em>Related Party Disclosures</em> and the IESBA <em>Code of Ethics for Professional Accountants</em>: maintaining professional objectivity, transparency in reporting relationships, and ethical conduct in all interactions with management, donors, regulators, and external auditors.</li>
-          </ul>
-          <p>I possess advanced proficiency in:</p>
-          <ul>
-            <li>ERP systems</li>
-            <li>QuickBooks Desktop & Online</li>
-            <li>Manager.io</li>
-            <li>School management/Accounting system</li>
-            <li>Zoho Books</li>
-            <li>Microsoft Excel and spreadsheet analysis tools</li>
-          </ul>
-          <p>In the NGO sector, I served as a Project Accountant where I played a significant role in strengthening accountability frameworks, supporting successful fundraising initiatives, and ensuring clean and compliant audits. My ability to deliver accurate financial insights and maintain high standards of integrity has consistently supported informed decision-making and organizational growth.</p>
-          <p>My tenure at the Kenya Revenue Authority at the Busia One-Stop Border Post stands as one of the most formative and defining chapters of my professional career. Stationed at one of Kenya's most active border crossing points — a facility generating in excess of KES 4 billion in revenue annually — I was immersed in the full breadth of public finance operations, revenue management, and tax administration at a national scale. I prepared daily, weekly, monthly, semi-annual, and annual revenue reports; filed VAT returns; audited tax general ledgers; and assessed imported goods for customs duty calculation in accordance with Kenya Revenue Authority guidelines and East African Community customs protocols. I assisted taxpayers with return filing including Turnover Tax, managed standing imprest, monitored station performance against daily revenue targets, and supported all audit review processes. The most significant milestone of this placement came when my supervisor proceeded on maternity leave and I was called upon to manage the entire finance office independently — sole responsibility for financial operations at a billion-shilling revenue station. I rose to that challenge without disruption to service delivery, and was subsequently recognised with an official commendation letter for my contribution to excellent revenue collection in the fiscal year 2021/2022. I also secured a clean auditor's report for the period — a testament to the discipline, integrity, and financial rigour I brought to every aspect of the role.</p>
-          <p>In my current role within the technology sector, I serve as Finance and Admin Manager at Sahara Desk Limited and concurrently as Part-Time Accountant at Sahara Africa Card Solutions — two ICT-driven companies operating at the intersection of digital innovation and financial services. This dual engagement has sharpened my ability to manage complex, fast-moving financial environments where accuracy, speed, and strategic thinking are non-negotiable. I oversee the full accounts payable and receivable cycle, manage supplier reconciliations, generate customer invoices through ETIMS, and maintain real-time financial records across both QuickBooks and Zoho Books platforms. Beyond day-to-day accounting, I prepare annual budgets, cash flow forecasts, integrated financial reports, and social and environmental reports for investors and shareholders — ensuring the organisations remain financially transparent, compliant, and growth-oriented. My work in the technology space has also given me hands-on experience in product pricing, import tax planning for internationally sourced working materials, inventory accounting, and the implementation of risk policy frameworks. Operating within a tech environment demands not only financial precision but also the agility to support rapidly evolving business models — a challenge I have embraced with consistency, professionalism, and measurable results.</p>
-          <p>I am recognized for my attention to detail, professionalism, strategic thinking, problem-solving abilities, and deep understanding of Kenyan business laws, taxation, and financial regulations. I thrive both independently and within collaborative team environments, bringing strong planning, time management, and communication skills to every role I undertake.</p>
-          <blockquote style="border-left:4px solid var(--gold);padding:12px;margin:18px 0;background:rgba(13,17,23,0.05);color:rgba(13,17,23,0.88);">My career objective is to continue leveraging my accounting and financial expertise to support organizational growth, strengthen financial governance, and contribute meaningfully to operational excellence and sustainable business success.</blockquote>
+        </div>
+      </section>
+      </div>
+
+      <div class="right-col">
+        <div class="hero-image">
+          <img src="profile.jpg" alt="Clinton Oremo Ouma" />
         </div>
         <aside class="contact-card">
           <h3>Contact</h3>
           <ul class="contact-list">
             <li><strong>Location</strong><span>Nairobi, Kenya</span></li>
             <li><strong>Phone</strong><a href="tel:+254745313247">+254 745 313 247</a></li>
+            <li><strong>WhatsApp</strong><a href="https://wa.me/254745313247?text=Hi%20Clinton,%20I%20saw%20your%20profile%20and%20would%20love%20to%20connect." target="_blank" rel="noreferrer">+254 745 313 247</a></li>
             <li><strong>Email</strong><a href="mailto:clintoniremo@gmail.com">clintoniremo@gmail.com</a></li>
-            <li><strong>LinkedIn</strong><a href="https://www.linkedin.com/in/clinton-oremo-471813228" target="_blank" rel="noreferrer">clinton-oremo-471813228</a></li>
+            <li><strong>LinkedIn</strong><a href="https://www.linkedin.com/in/clinton-oremo" target="_blank" rel="noreferrer">clinton-oremo</a></li>
           </ul>
         </aside>
       </div>
+
+    </div>
+
+    <section class="about-extended">
+      <p>My strength and competence are below supported</p>
+      <ul>
+        <li><strong>Financial reporting & analysis</strong> — IAS 1 <em>Presentation of Financial Statements</em> and IFRS 18 <em>Presentation and Disclosure in Financial Statements</em>: preparation of structured, compliant financial statements with proper classification of income, expenses, assets, and liabilities.</li>
+        <li><strong>Accounting for financial instruments</strong> — IFRS 9 <em>Financial Instruments</em>: recognition, classification, measurement, impairment (Expected Credit Loss model), and derecognition of financial assets and liabilities including trade receivables and investments.</li>
+        <li><strong>Accounts payable & receivable management</strong> — IFRS 15 <em>Revenue from Contracts with Customers</em> (AR) and IAS 37 <em>Provisions, Contingent Liabilities and Contingent Assets</em> (AP): accurate recognition of revenue and obligations, management of aging schedules, and timely settlement of payables.</li>
+        <li><strong>Payroll administration & statutory remittances</strong> — IAS 19 <em>Employee Benefits</em>: recognition and measurement of short-term employee benefits, accruals, and defined contribution obligations including NSSF, NHIF, PAYE, NITA, HELB, and WHT in line with Kenyan statutory requirements.</li>
+        <li><strong>Ledger reconciliation & accurate financial posting</strong> — IAS 8 <em>Accounting Policies, Changes in Accounting Estimates and Errors</em>: consistent application of accounting policies, correction of prior period errors, and maintenance of accurate ledger balances through regular reconciliation.</li>
+        <li><strong>Tax compliance & advisory</strong> — IAS 12 <em>Income Taxes</em>: recognition and measurement of current and deferred tax liabilities and assets, accurate tax computations, and compliance with Kenya Revenue Authority requirements including VAT, corporate tax, and withholding tax.</li>
+        <li><strong>Budgeting & financial planning</strong> — IAS 1 <em>Presentation of Financial Statements</em> and IAS 34 <em>Interim Financial Reporting</em>: preparation of forward-looking financial plans, variance analysis between budget and actuals, and interim period reporting to support management decision-making.</li>
+        <li><strong>ERP systems & accounting software management</strong> — ISAE 3402 <em>Assurance Reports on Controls at a Service Organisation</em> and IAS 8: ensuring that accounting systems (QuickBooks, Zoho Books, ERP, Manager.io) apply consistent accounting policies, maintain an auditable trail, and produce reliable financial outputs.</li>
+        <li><strong>Internal controls & audit support</strong> — ISA 315 <em>Identifying and Assessing the Risks of Material Misstatement</em> and ISA 265 <em>Communicating Deficiencies in Internal Control</em>: design and monitoring of internal controls to prevent misstatement, support of external auditors, and remediation of control weaknesses.</li>
+        <li><strong>Data analysis, reporting & presentation</strong> — IFRS 18 <em>Presentation and Disclosure in Financial Statements</em> and IAS 1: preparation of management reports, financial dashboards, and disclosures that communicate performance clearly to stakeholders in a structured, decision-useful format.</li>
+        <li><strong>Leadership, team coordination & stakeholder management</strong> — IAS 24 <em>Related Party Disclosures</em> and the IESBA <em>Code of Ethics for Professional Accountants</em>: maintaining professional objectivity, transparency in reporting relationships, and ethical conduct in all interactions with management, donors, regulators, and external auditors.</li>
+      </ul>
+      <p>I possess advanced proficiency in:</p>
+      <ul>
+        <li>ERP systems</li>
+        <li>QuickBooks Desktop & Online</li>
+        <li>Manager.io</li>
+        <li>School management/Accounting system</li>
+        <li>Zoho Books</li>
+        <li>Microsoft Excel and spreadsheet analysis tools</li>
+      </ul>
+      <p>In the NGO sector, I served as a Project Accountant where I played a significant role in strengthening accountability frameworks, supporting successful fundraising initiatives, and ensuring clean and compliant audits. My ability to deliver accurate financial insights and maintain high standards of integrity has consistently supported informed decision-making and organizational growth.</p>
+      <p>My tenure at the Kenya Revenue Authority at the Busia One-Stop Border Post stands as one of the most formative and defining chapters of my professional career. Stationed at one of Kenya's most active border crossing points — a facility generating in excess of KES 4 billion in revenue annually — I was immersed in the full breadth of public finance operations, revenue management, and tax administration at a national scale. I prepared daily, weekly, monthly, semi-annual, and annual revenue reports; filed VAT returns; audited tax general ledgers; and assessed imported goods for customs duty calculation in accordance with Kenya Revenue Authority guidelines and East African Community customs protocols. I assisted taxpayers with return filing including Turnover Tax, managed standing imprest, monitored station performance against daily revenue targets, and supported all audit review processes. The most significant milestone of this placement came when my supervisor proceeded on maternity leave and I was called upon to manage the entire finance office independently — sole responsibility for financial operations at a billion-shilling revenue station. I rose to that challenge without disruption to service delivery, and was subsequently recognised with an official commendation letter for my contribution to excellent revenue collection in the fiscal year 2021/2022. I also secured a clean auditor's report for the period — a testament to the discipline, integrity, and financial rigour I brought to every aspect of the role.</p>
+      <p>In my current role within the technology sector, I serve as Finance and Admin Manager at Sahara Desk Limited and concurrently as Part-Time Accountant at Sahara Africa Card Solutions — two ICT-driven companies operating at the intersection of digital innovation and financial services. This dual engagement has sharpened my ability to manage complex, fast-moving financial environments where accuracy, speed, and strategic thinking are non-negotiable. I oversee the full accounts payable and receivable cycle, manage supplier reconciliations, generate customer invoices through ETIMS, and maintain real-time financial records across both QuickBooks and Zoho Books platforms. Beyond day-to-day accounting, I prepare annual budgets, cash flow forecasts, integrated financial reports, and social and environmental reports for investors and shareholders — ensuring the organisations remain financially transparent, compliant, and growth-oriented. My work in the technology space has also given me hands-on experience in product pricing, import tax planning for internationally sourced working materials, inventory accounting, and the implementation of risk policy frameworks. Operating within a tech environment demands not only financial precision but also the agility to support rapidly evolving business models — a challenge I have embraced with consistency, professionalism, and measurable results.</p>
+      <p>I am recognized for my attention to detail, professionalism, strategic thinking, problem-solving abilities, and deep understanding of Kenyan business laws, taxation, and financial regulations. I thrive both independently and within collaborative team environments, bringing strong planning, time management, and communication skills to every role I undertake.</p>
+      <blockquote style="border-left:4px solid var(--gold);padding:12px;margin:18px 0;background:rgba(13,17,23,0.05);color:rgba(13,17,23,0.88);">My career objective is to continue leveraging my accounting and financial expertise to support organizational growth, strengthen financial governance, and contribute meaningfully to operational excellence and sustainable business success.</blockquote>
     </section>
 
     <section id="skills">
@@ -685,12 +795,35 @@
         <h2>Let's connect</h2>
         <p>For finance leadership, audit readiness, or systems-driven accounting support, reach out to begin a conversation.</p>
         <div class="contact-buttons">
-          <a class="btn-email" href="mailto:clintoniremo@gmail.com">Email Clinton</a>
-          <a class="btn-phone" href="tel:+254745313247">Call +254 745 313 247</a>
-          <a class="btn-linkedin" href="https://www.linkedin.com/in/clinton-oremo-471813228" target="_blank" rel="noreferrer">View LinkedIn</a>
+          <a class="btn-email" href="mailto:clintoniremo@gmail.com">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            Email Clinton
+          </a>
+          <a class="btn-whatsapp" href="https://wa.me/254745313247?text=Hi%20Clinton,%20I%20saw%20your%20profile%20and%20would%20love%20to%20connect." target="_blank" rel="noreferrer">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.173 8.173 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.192 8.192 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m-3.9 3.93c-.22 0-.43.1-.59.26-.35.35-.78.89-.78 1.73 0 1.7 1.23 3.34 1.41 3.57.17.24 2.43 3.7 5.88 5.19.82.35 1.46.56 1.96.72.83.26 1.58.22 2.17.14.66-.1 2.03-.83 2.32-1.63.29-.8.29-1.49.2-1.63-.09-.14-.34-.23-.72-.42-.38-.19-2.24-1.1-2.58-1.22-.35-.12-.6-.19-.85.19-.25.38-.97 1.22-1.19 1.47-.22.25-.45.28-.83.09-.38-.19-1.61-.59-3.07-1.9-1.13-1.01-1.9-2.26-2.12-2.64-.22-.38-.02-.59.17-.78.17-.17.38-.44.57-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.85-2.06-1.17-2.83-.3-.76-.62-.65-.85-.66l-.69-.02z"/></svg>
+            WhatsApp Chat
+          </a>
+          <a class="btn-phone" href="tel:+254745313247">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.59.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            Direct Call
+          </a>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/clinton-oremo" target="_blank" rel="noreferrer">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            LinkedIn
+          </a>
         </div>
       </div>
     </section>
   </main>
+
+  <!-- Floating Contact Buttons -->
+  <div class="floating-contact">
+    <a href="https://wa.me/254745313247?text=Hi%20Clinton,%20I%20saw%20your%20profile%20and%20would%20love%20to%20connect." class="floating-btn whatsapp-float" target="_blank" rel="noreferrer" title="Chat on WhatsApp">
+      <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.173 8.173 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.192 8.192 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m-3.9 3.93c-.22 0-.43.1-.59.26-.35.35-.78.89-.78 1.73 0 1.7 1.23 3.34 1.41 3.57.17.24 2.43 3.7 5.88 5.19.82.35 1.46.56 1.96.72.83.26 1.58.22 2.17.14.66-.1 2.03-.83 2.32-1.63.29-.8.29-1.49.2-1.63-.09-.14-.34-.23-.72-.42-.38-.19-2.24-1.1-2.58-1.22-.35-.12-.6-.19-.85.19-.25.38-.97 1.22-1.19 1.47-.22.25-.45.28-.83.09-.38-.19-1.61-.59-3.07-1.9-1.13-1.01-1.9-2.26-2.12-2.64-.22-.38-.02-.59.17-.78.17-.17.38-.44.57-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.85-2.06-1.17-2.83-.3-.76-.62-.65-.85-.66l-.69-.02z"/></svg>
+    </a>
+    <a href="tel:+254745313247" class="floating-btn phone-float" title="Direct Phone Call">
+      <svg viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
+    </a>
+  </div>
 </body>
 </html>

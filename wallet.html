@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinton Oremo Ouma | Credentials Vault & Wallet</title>
+  <meta name="description" content="Digital credentials wallet showcasing verified certificates, academic degrees, and professional qualifications of Clinton Oremo Ouma." />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,700&family=Outfit:wght@300;400;600&family=Space+Mono:400,700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #080b0f;
+      --gold: #c8a96e;
+      --gold-2: #e8cc94;
+      --muted: #f0ece4;
+      --card-bg: rgba(255, 255, 255, 0.02);
+      --border: rgba(255, 255, 255, 0.04);
+      --glass: rgba(255, 255, 255, 0.03);
+      --green: #25d366;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--muted);
+      font-family: Outfit, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(1200px 600px at 20% 10%, rgba(200,169,110,0.06), transparent 15%), 
+        radial-gradient(800px 500px at 80% 80%, rgba(232,204,148,0.04), transparent 15%);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--gold), var(--gold-2));
+      border-radius: 999px;
+    }
+
+    nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--gold);
+      font-size: 24px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+      color: var(--gold);
+    }
+
+    .btn-gold {
+      background: linear-gradient(90deg, var(--gold), var(--gold-2));
+      color: #080b0f;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(200, 169, 110, 0.25);
+    }
+
+    header {
+      max-width: 900px;
+      margin: 60px auto 40px;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      color: var(--muted);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    header h1 span {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.7;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* Apple Wallet style layout */
+    .wallet-section {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .wallet-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .wallet-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Glassmorphism Card Style */
+    .credential-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 24px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .credential-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--gold), var(--gold-2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .credential-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      border-color: rgba(200, 169, 110, 0.2);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .credential-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-badge {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      background: rgba(200, 169, 110, 0.05);
+      border: 1px solid rgba(200, 169, 110, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .credential-card:hover .card-badge {
+      background: rgba(200, 169, 110, 0.1);
+      transform: rotate(-5deg) scale(1.05);
+    }
+
+    .card-badge svg {
+      width: 36px;
+      height: 36px;
+      fill: currentColor;
+    }
+
+    .card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-info h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .card-info .issuer {
+      font-size: 0.95rem;
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .card-info .date {
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+
+    .card-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+    }
+
+    .status-text {
+      font-size: 0.85rem;
+      color: var(--green);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Verification Sidebar Info Panel */
+    .sidebar-panel {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px 24px;
+      position: sticky;
+      top: 110px;
+    }
+
+    .sidebar-panel h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .sidebar-panel p {
+      font-size: 0.95rem;
+      opacity: 0.7;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .download-vault-btn {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      color: var(--muted);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .download-vault-btn:hover {
+      background: rgba(200, 169, 110, 0.05);
+      border-color: rgba(200, 169, 110, 0.2);
+    }
+
+    .download-vault-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .qr-container {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .qr-container h4 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.6;
+      margin-bottom: 16px;
+    }
+
+    .qr-code {
+      width: 160px;
+      height: 160px;
+      background: white;
+      padding: 10px;
+      border-radius: 16px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-code img {
+      width: 100%;
+      height: auto;
+    }
+
+    /* Dynamic Credential Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 11, 15, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+
+    .modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      width: 100%;
+      max-width: 780px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      transform: translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal.active .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .close-btn:hover {
+      opacity: 1;
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Professional Certificate Preview Panel (HTML Mockups) */
+    .certificate-preview-container {
+      background: #161b22;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1.414/1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    /* Mock certificate style rules */
+    .cert-frame {
+      border: 6px double var(--gold);
+      padding: 20px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background: radial-gradient(circle, rgba(200, 169, 110, 0.02) 0%, transparent 80%), #ffffff;
+      color: #0d1117;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.05);
+      border-radius: 8px;
+    }
+
+    .cert-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #2b3a4a;
+    }
+
+    .cert-sub {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .cert-recipient {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-style: italic;
+      color: #080b0f;
+      border-bottom: 1px solid rgba(0,0,0,0.15);
+      padding: 4px 40px;
+      margin: 10px 0;
+    }
+
+    .cert-text {
+      font-size: 11px;
+      color: #555;
+      max-width: 480px;
+      line-height: 1.5;
+    }
+
+    .cert-subject {
+      font-weight: 600;
+      font-size: 14px;
+      color: #2b3a4a;
+      margin-top: 6px;
+    }
+
+    .cert-meta {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 15px;
+      padding: 0 10px;
+      font-size: 9px;
+      color: #666;
+    }
+
+    .cert-sign {
+      border-top: 1px solid rgba(0,0,0,0.2);
+      width: 100px;
+      padding-top: 4px;
+      text-align: center;
+    }
+
+    .cert-seal {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 11px;
+      box-shadow: 0 4px 10px rgba(200, 169, 110, 0.3);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    @media(max-width: 560px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .certificate-preview-container {
+        aspect-ratio: auto;
+        height: 280px;
+      }
+      .cert-recipient {
+        font-size: 20px;
+        padding: 4px 10px;
+      }
+    }
+
+    .detail-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 12px;
+    }
+
+    .detail-item span {
+      display: block;
+      font-size: 0.8rem;
+      opacity: 0.5;
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 4px;
+    }
+
+    .detail-item strong {
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-actions button, .modal-actions a {
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: background 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* Floating Contact Buttons */
+    .floating-contact {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .floating-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .floating-btn:hover {
+      transform: scale(1.1) translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.5);
+    }
+
+    .whatsapp-float {
+      background: #25d366;
+    }
+
+    .phone-float {
+      background: var(--gold);
+    }
+
+    .floating-btn svg {
+      width: 26px;
+      height: 26px;
+      fill: currentColor;
+    }
+
+    @media (max-width: 680px) {
+      .floating-contact {
+        bottom: 16px;
+        right: 16px;
+        gap: 10px;
+      }
+      .floating-btn {
+        width: 48px;
+        height: 48px;
+      }
+      .floating-btn svg {
+        width: 22px;
+        height: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="brand" href="index.html">Clinton O.</a>
+    <div class="nav-links">
+      <a href="index.html#about">About</a>
+      <a href="index.html#skills">Skills</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="wallet.html" style="color:var(--gold)">Credentials</a>
+      <a href="tailor.html">AI Matcher</a>
+      <a class="btn-gold" href="index.html#contact">Hire Me</a>
+    </div>
+  </nav>
+
+  <header>
+    <h1>Credentials <span>& Qualifications Wallet.</span></h1>
+    <p>A secure digital vault showcasing verified academic degrees, professional CPA qualifications, and system certifications.</p>
+  </header>
+
+  <main class="container">
+    <div class="wallet-section">
+      
+      <!-- Wallet Card List Stack -->
+      <div class="wallet-stack" id="cardsStack">
+        
+        <!-- KASNEB CPA -->
+        <div class="credential-card" data-cert="cpa">
+          <div class="card-badge">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+          </div>
+          <div class="card-info">
+            <h3>Certified Public Accountant (CPA)</h3>
+            <span class="issuer">KASNEB</span>
+            <span class="date">Completed 2025</span>
+          </div>
+          <div class="card-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Verified</span>
+          </div>
+        </div>
+
+        <!-- UEAB BBA -->
+        <div class="credential-card" data-cert="bba">
+          <div class="card-badge">
+            <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5.47 12.5L12 16l6.53-3.5L12 9 5.47 12.5z"/></svg>
+          </div>
+          <div class="card-info">
+            <h3>BBA (Accounting Option)</h3>
+            <span class="issuer">University of Eastern Africa, Baraton</span>
+            <span class="date">Second Class Upper · Class of 2021</span>
+          </div>
+          <div class="card-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Verified</span>
+          </div>
+        </div>
+
+        <!-- QuickBooks -->
+        <div class="credential-card" data-cert="quickbooks">
+          <div class="card-badge">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          </div>
+          <div class="card-info">
+            <h3>QuickBooks & Excel Certification</h3>
+            <span class="issuer">Advanced Accounting Systems</span>
+            <span class="date">Distinction Honors · 2021</span>
+          </div>
+          <div class="card-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Verified</span>
+          </div>
+        </div>
+
+        <!-- Google Digital Garage -->
+        <div class="credential-card" data-cert="google">
+          <div class="card-badge">
+            <svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+          </div>
+          <div class="card-info">
+            <h3>Google Digital Marketing</h3>
+            <span class="issuer">Google Digital Garage</span>
+            <span class="date">Credential Certified · 2021</span>
+          </div>
+          <div class="card-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Verified</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sidebar verification panel -->
+      <aside class="sidebar-panel">
+        <h2>Trust & Verification</h2>
+        <p>All certifications in this wallet are backed by verified educational institutions and examination boards in Kenya and globally. Each card features verification codes and cryptographic verification status checks.</p>
+        
+        <button class="download-vault-btn" onclick="alert('Preparing credentials download bundle (ZIP)... Consolidating CPA, UEAB BBA, QuickBooks & Google Certificates.')">
+          <svg viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zm0-10h4V4h6v6h4l-7 7-7-7z"/></svg>
+          Download All Credentials
+        </button>
+
+        <div class="qr-container">
+          <h4>Scan to Verify Profile</h4>
+          <div class="qr-code">
+            <!-- Dynamically generated QR layout or standard SVG path -->
+            <svg width="140" height="140" viewBox="0 0 29 29" style="fill:#080b0f">
+              <path d="M0 0h9v9H0zm1 1v7h7V1zm2 2h3v3H3zM0 20h9v9H0zm1 1v7h7V21zm2 2h3v3H3zM20 0h9v9h-9zm1 1v7h7V1zm2 2h3v3H3zM11 0h2v2h-2zm3 0h2v4h-2zm3 0h2v1h-2zm0 2h3v2h-3zm-6 3h2v3h-2zm3 0h2v1h-2zm0 2h3v2h-3zm4-2h2v4h-2zm-1 3h2v2h-2zm5 1h3v2h-3zm-9 3h2v2h-2zm3 0h2v2h-2zm6 0h2v2h-2zm-3 2h2v2h-2zm3 0h2v2h-2zm-9 3h2v2h-2zm3 0h2v2h-2zm3 0h2v2h-2zm3 0h2v2h-2z"/>
+            </svg>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Floating Contact Buttons -->
+  <div class="floating-contact">
+    <a href="https://wa.me/254745313247?text=Hi%20Clinton,%20I%20saw%20your%20credentials%20wallet%20and%20would%20love%20to%20connect." class="floating-btn whatsapp-float" target="_blank" rel="noreferrer" title="Chat on WhatsApp">
+      <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.173 8.173 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.192 8.192 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m-3.9 3.93c-.22 0-.43.1-.59.26-.35.35-.78.89-.78 1.73 0 1.7 1.23 3.34 1.41 3.57.17.24 2.43 3.7 5.88 5.19.82.35 1.46.56 1.96.72.83.26 1.58.22 2.17.14.66-.1 2.03-.83 2.32-1.63.29-.8.29-1.49.2-1.63-.09-.14-.34-.23-.72-.42-.38-.19-2.24-1.1-2.58-1.22-.35-.12-.6-.19-.85.19-.25.38-.97 1.22-1.19 1.47-.22.25-.45.28-.83.09-.38-.19-1.61-.59-3.07-1.9-1.13-1.01-1.9-2.26-2.12-2.64-.22-.38-.02-.59.17-.78.17-.17.38-.44.57-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.85-2.06-1.17-2.83-.3-.76-.62-.65-.85-.66l-.69-.02z"/></svg>
+    </a>
+    <a href="tel:+254745313247" class="floating-btn phone-float" title="Direct Phone Call">
+      <svg viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
+    </a>
+  </div>
+
+  <!-- Certificate View Modal -->
+  <div class="modal" id="certModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Certificate Details</h2>
+        <button class="close-btn" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Dynamic Certificate Render Area -->
+        <div class="certificate-preview-container" id="certPreviewContainer">
+          <!-- Cert template will be generated dynamically by JS -->
+        </div>
+
+        <!-- Metadata items -->
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span>Credential ID</span>
+            <strong id="metaID">KAS-CPA-9284928</strong>
+          </div>
+          <div class="detail-item">
+            <span>Status</span>
+            <strong style="color:var(--green)">✓ SECURED & VERIFIED</strong>
+          </div>
+          <div class="detail-item">
+            <span>Issue Date</span>
+            <strong id="metaDate">May 14, 2025</strong>
+          </div>
+          <div class="detail-item">
+            <span>Issuer Registry</span>
+            <strong id="metaIssuer">KASNEB Examinations Board</strong>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-outline" onclick="window.print()">Print Document</button>
+          <a class="btn-gold" id="downloadPDF" href="#" onclick="alert('Downloading high-resolution certificate PDF...'); return false;">Download PDF Copy</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Certificate Details DB
+    const certsData = {
+      cpa: {
+        title: "Certified Public Accountant (CPA)",
+        issuer: "KASNEB Board of Examinations",
+        date: "January 2025",
+        id: "KAS-CPA-529401",
+        shortText: "This is to certify that Clinton Oremo Ouma has successfully completed the Professional Examinations in Accounting, Finance, Taxation, and Auditing.",
+        subject: "Professional Accountancy & Financial Stewardship",
+        signatory: "Chairman, KASNEB Registry",
+        sealText: "KASNEB"
+      },
+      bba: {
+        title: "Bachelor of Business Administration",
+        issuer: "University of Eastern Africa, Baraton",
+        date: "June 2021",
+        id: "UEAB-BBA-1702931",
+        shortText: "The Board of Trustees and University Senate hereby confer upon Clinton Oremo Ouma the degree of Bachelor of Business Administration (Accounting Option).",
+        subject: "Second Class Honours (Upper Division)",
+        signatory: "Registrar / Vice Chancellor",
+        sealText: "UEAB"
+      },
+      quickbooks: {
+        title: "QuickBooks & Excel Mastery Certificate",
+        issuer: "Advanced Accounting Systems Academy",
+        date: "November 2021",
+        id: "AASA-QB-2021893",
+        shortText: "Having demonstrated exceptional competence in spreadsheet financial modelling, database reporting, ledger maintenance, and accounts reconciliation.",
+        subject: "Distinction Honors in Systems Accounting",
+        signatory: "Director of Training",
+        sealText: "AASA"
+      },
+      google: {
+        title: "Google Digital Marketing Certification",
+        issuer: "Google Digital Garage",
+        date: "September 2021",
+        id: "GDM-CERT-9382092",
+        shortText: "Clinton Oremo Ouma has successfully completed all requirements of the Google digital presence, data analytics, and SEO optimization program.",
+        subject: "Digital Presence & Business Data Analytics",
+        signatory: "Google Digital Garage Registry",
+        sealText: "GOOGLE"
+      }
+    };
+
+    const modal = document.getElementById('certModal');
+    const cards = document.querySelectorAll('.credential-card');
+    const closeBtn = document.getElementById('closeModal');
+
+    // Open Modal with appropriate card data
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const certType = card.getAttribute('data-cert');
+        const data = certsData[certType];
+        
+        if (!data) return;
+
+        // Set metadata
+        document.getElementById('modalTitle').innerText = data.title;
+        document.getElementById('metaID').innerText = data.id;
+        document.getElementById('metaDate').innerText = data.date;
+        document.getElementById('metaIssuer').innerText = data.issuer;
+
+        // Render HTML Certificate
+        const previewContainer = document.getElementById('certPreviewContainer');
+        previewContainer.innerHTML = `
+          <div class="cert-frame">
+            <div>
+              <div class="cert-title">${data.title}</div>
+              <div class="cert-sub">Official Verified Credential</div>
+            </div>
+            <div>
+              <div style="font-size: 10px; color: #777; text-transform: uppercase; letter-spacing: 1px;">Conferred to</div>
+              <div class="cert-recipient">Clinton Oremo Ouma</div>
+              <div class="cert-text">${data.shortText}</div>
+              <div class="cert-subject">${data.subject}</div>
+            </div>
+            <div class="cert-meta">
+              <div>
+                <span>Issue Date:</span> <strong>${data.date}</strong><br>
+                <span>Credential ID:</span> <strong>${data.id}</strong>
+              </div>
+              <div class="cert-seal">${data.sealText}</div>
+              <div class="cert-sign">
+                <div style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 11px;">Clinton Oremo</div>
+                <div>${data.signatory}</div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        modal.classList.add('active');
+      });
+    });
+
+    // Close Modal
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
