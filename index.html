@@ -117,7 +117,29 @@
 
     .hero {
       display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .hero-content {
+      display: grid;
       gap: 28px;
+    }
+
+    .hero-image {
+      width: 100%;
+      max-width: 380px;
+      justify-self: center;
+      margin-top: 12px;
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 28px;
+      box-shadow: 0 50px 100px rgba(13,17,23,0.15);
+      display: block;
     }
 
     .hero h1 {
@@ -423,6 +445,8 @@
       .about-grid { grid-template-columns: 1fr; }
       nav { padding: 16px 24px; }
       .nav-links { gap: 16px; }
+      .hero { grid-template-columns: 1fr; gap: 32px; }
+      .hero-image { max-width: 320px; }
     }
 
     @media (max-width: 680px) {
@@ -450,27 +474,34 @@
   <main class="page-wrap">
     <header>
       <div class="hero">
-        <span class="eyebrow">Finance & Accounting Professional</span>
-        <h1>Clinton Oremo Ouma</h1>
-        <p class="lead">Nairobi-based accounting leader with a refined editorial approach to financial reporting, compliance, audit readiness, and operational excellence.</p>
-      </div>
+        <div class="hero-content">
+          <div>
+            <span class="eyebrow">Finance & Accounting Professional</span>
+            <h1>Clinton Oremo Ouma</h1>
+            <p class="lead">Nairobi-based accounting leader with a refined editorial approach to financial reporting, compliance, audit readiness, and operational excellence.</p>
+          </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <strong>4+ Years</strong>
-          <span>Experience in finance and accounting leadership</span>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <strong>4+ Years</strong>
+              <span>Experience in finance and accounting leadership</span>
+            </div>
+            <div class="stat-card">
+              <strong>6+ Sectors</strong>
+              <span>Served across NGO, hospitality, payroll, retail, services, and government</span>
+            </div>
+            <div class="stat-card">
+              <strong>4</strong>
+              <span>Clean audit reports delivered with risk-focused precision</span>
+            </div>
+            <div class="stat-card">
+              <strong>CPA</strong>
+              <span>Fully qualified accounting professional with practical systems expertise</span>
+            </div>
+          </div>
         </div>
-        <div class="stat-card">
-          <strong>6+ Sectors</strong>
-          <span>Served across NGO, hospitality, payroll, retail, services, and government</span>
-        </div>
-        <div class="stat-card">
-          <strong>4</strong>
-          <span>Clean audit reports delivered with risk-focused precision</span>
-        </div>
-        <div class="stat-card">
-          <strong>CPA</strong>
-          <span>Fully qualified accounting professional with practical systems expertise</span>
+        <div class="hero-image">
+          <img src="profile.jpg" alt="Clinton Oremo Ouma" />
         </div>
       </div>
     </header>
