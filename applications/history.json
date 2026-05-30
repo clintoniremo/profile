@@ -10,9 +10,9 @@
     }
   ],
   "stats": {
-    "totalScanned": 63,
+    "totalScanned": 67,
     "totalApplied": 1,
-    "totalSkipped": 62,
-    "lastRunTime": "2026-05-29T17:06:43.640Z"
+    "totalSkipped": 66,
+    "lastRunTime": "2026-05-30T07:48:49.743Z"
   }
 }

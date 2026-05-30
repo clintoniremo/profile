@@ -1392,30 +1392,27 @@
     <!-- Upload Panel -->
     <div class="panel" style="background: rgba(255,255,255,0.02); border-color: rgba(14,165,233,0.15);">
       <div class="panel-header">
-        <h2>Upload CV & Cover Letter</h2>
+        <h2>Upload Documents (CV &amp; Cover Letter)</h2>
         <span style="background:rgba(14,165,233,0.15)">CUSTOM INPUT</span>
       </div>
       <div class="form-group">
-        <label for="cvUpload">Upload CV (PDF)</label>
-        <input type="file" id="cvUpload" accept="application/pdf" />
-      </div>
-      <div class="form-group">
-        <label for="coverUpload">Upload Cover Letter (TXT/MD)</label>
-        <input type="file" id="coverUpload" accept=".txt,.md" />
+        <label for="docsUpload">Upload CV (PDF) and Cover Letter (TXT/MD)</label>
+        <input type="file" id="docsUpload" accept="application/pdf,.txt,.md" multiple />
       </div>
       <button class="btn-action" id="processUploadBtn" disabled>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5v14m7-7H5"/></svg>
-        Generate Drafts
-      </button>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5v14m7-7H5"/></svg>
+  Generate Drafts
+</button>
+<button class="btn-action" id="genSendBtn" disabled>Generate &amp; Send</button>
     </div>
     
-    <!-- Include jsPDF for PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-6F6Z6nV4aYKLni1VT/Z9qkpVVgVPOX+X/0N/2ZRohl/ZwWyqv0JQcIPCLXWc5Q46ps5zddgMfhzVjIfUUnP6xw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Include jsPDF and PDF-Lib for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
     
     <script>
-      // File handling for CV and Cover Letter
-      const cvInput = document.getElementById('cvUpload');
-      const coverInput = document.getElementById('coverUpload');
+      // Unified file handling for CV (PDF) and Cover Letter (TXT/MD)
+      const docsInput = document.getElementById('docsUpload');
       const processBtn = document.getElementById('processUploadBtn');
       let cvFileData = null;
       let coverText = '';
@@ -1428,43 +1425,97 @@
         }
       }
 
-      cvInput.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const arrayBuffer = await file.arrayBuffer();
-          cvFileData = new Uint8Array(arrayBuffer);
-        } else {
-          cvFileData = null;
+      docsInput.addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files);
+        cvFileData = null;
+        coverText = '';
+        for (const file of files) {
+          if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+            const arrayBuffer = await file.arrayBuffer();
+            cvFileData = new Uint8Array(arrayBuffer);
+          } else {
+            const text = await file.text();
+            coverText = text;
+          }
         }
+        document.getElementById('clTextarea').value = coverText;
         enableProcess();
       });
 
-      coverInput.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const text = await file.text();
-          coverText = text;
-          document.getElementById('clTextarea').value = coverText;
-        } else {
-          coverText = '';
-          document.getElementById('clTextarea').value = '';
-        }
-        enableProcess();
-      });
+processBtn.addEventListener('click', async () => {
+  // Simple preview: render PDF bytes as object URL in CV preview area
+  if (cvFileData) {
+    const blob = new Blob([cvFileData], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const cvContainer = document.getElementById('cvContainer');
+    cvContainer.innerHTML = `<embed src="${url}" type="application/pdf" width="100%" height="400px"/>`;
+  }
+  // Cover letter already populated via textarea.
+  alert('CV preview loaded and cover letter populated. You can now download the CV as PDF or send the application.');
+  // Enable Generate & Send button after preview
+  document.getElementById('genSendBtn').disabled = false;
+});
 
-      processBtn.addEventListener('click', async () => {
-        // Simple preview: render PDF bytes as object URL in CV preview area
-        if (cvFileData) {
-          const blob = new Blob([cvFileData], { type: 'application/pdf' });
-          const url = URL.createObjectURL(blob);
-          const cvContainer = document.getElementById('cvContainer');
-          cvContainer.innerHTML = `<embed src="${url}" type="application/pdf" width="100%" height="400px"/>`;
-        }
-        // Cover letter already populated above.
-        // Enable PDF download button (already present)
-        // Optionally, show a toast
-        alert('CV preview loaded and cover letter populated. You can now download the CV as PDF or send the application.');
-      });
+// Helper to convert Blob to Base64
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+// Merge PDF (CV + Cover Letter) using pdf-lib
+async function mergePdf(cvBlob, coverText) {
+  const { PDFDocument, StandardFonts, rgb } = PDFLib;
+  const cvArray = await cvBlob.arrayBuffer();
+  const cvPdf = await PDFDocument.load(cvArray);
+  const mergedPdf = await PDFDocument.create();
+  // Add cover letter page
+  const coverPage = mergedPdf.addPage();
+  const { width, height } = coverPage.getSize();
+  const font = await mergedPdf.embedFont(StandardFonts.Helvetica);
+  const fontSize = 12;
+  const lines = coverText.split('\n');
+  let y = height - 50;
+  lines.forEach(line => {
+    coverPage.drawText(line, { x: 50, y, size: fontSize, font, color: rgb(0,0,0) });
+    y -= fontSize + 4;
+  });
+  // Append CV pages
+  const cvPages = await mergedPdf.copyPages(cvPdf, cvPdf.getPageIndices());
+  cvPages.forEach(p => mergedPdf.addPage(p));
+  const mergedBytes = await mergedPdf.save();
+  return new Blob([mergedBytes], { type: 'application/pdf' });
+}
+
+// Handler for Generate & Send button
+document.getElementById('genSendBtn').addEventListener('click', async () => {
+  if (!cvFileData || !coverText) return;
+  const cvBlob = new Blob([cvFileData], { type: 'application/pdf' });
+  const mergedBlob = await mergePdf(cvBlob, coverText);
+  const mergedBase64 = await blobToBase64(mergedBlob);
+  // Prepare payload
+  const payload = {
+    ...selectedJob,
+    mergedPdf: mergedBase64,
+    coverLetter: coverText,
+    cvPdf: await blobToBase64(cvBlob)
+  };
+  // Send to backend
+  const response = await fetch('/api/apply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (response.ok) {
+    const resData = await response.json();
+    console.log('Application sent:', resData);
+  } else {
+    console.error('Failed to send application');
+  }
+});
 
       // Override existing downloadCvAsPdf to capture the previewed PDF (if any) or fallback to CV preview HTML
       async function downloadCvAsPdf() {
@@ -1665,43 +1716,77 @@
         }
       }
 
+  // Fetch WeWorkRemotely RSS
       try {
-        // We use a free, robust open CORS-safe XML proxy to parse WeWorkRemotely RSS feed
         const rssUrl = "https://weworkremotely.com/categories/remote-finance-legal-jobs.rss";
         const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-        
         const response = await fetch(proxyUrl);
         if (!response.ok) throw new Error("CORS Proxy unavailable");
-        
         const data = await response.json();
-        
         if (data.items && data.items.length > 0) {
           parsedJobs = [];
-          data.items.slice(0, 10).forEach((item, index) => {
+          data.items.slice(0, 10).forEach(item => {
             const rawTitle = item.title;
             let company = "Remote Corporation";
             let cleanTitle = rawTitle;
-
             if (rawTitle.includes(":")) {
               const parts = rawTitle.split(":");
               company = parts[0].trim();
               cleanTitle = parts.slice(1).join(":").trim();
             }
-
+            // Deadline filter: keep items with pubDate within last 30 days
+            const pubDate = item.pubDate ? new Date(item.pubDate) : new Date();
+            const thirtyDaysAgo = Date.now() - 30*24*60*60*1000;
+            if (pubDate.getTime() < thirtyDaysAgo) return; // skip old
             parsedJobs.push({
               title: cleanTitle,
               company: company,
               category: "Remote / Finance",
               description: item.description ? item.description.replace(/<\/?[^>]+(>|$)/g, "").trim() : "Apply via online board.",
-              url: item.link || "https://weworkremotely.com"
+              url: item.link || "https://weworkremotely.com",
+              pubDate: pubDate.toISOString()
             });
           });
         }
       } catch (err) {
-        console.warn("Live RSS fetch failed, falling back to local vault listings", err);
+        console.warn("WeWorkRemotely RSS fetch failed", err);
+      }
+      // LinkedIn RSS source
+      try {
+        const linkedinRss = "https://www.linkedin.com/jobs-guest/jobs/rss/?keywords=finance";
+        const proxyUrl2 = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(linkedinRss)}`;
+        const resp2 = await fetch(proxyUrl2);
+        if (resp2.ok) {
+          const data2 = await resp2.json();
+          if (data2.items && data2.items.length > 0) {
+            data2.items.forEach(item => {
+              const rawTitle = item.title;
+              let company = "LinkedIn";
+              let cleanTitle = rawTitle;
+              if (rawTitle.includes(":")) {
+                const parts = rawTitle.split(":");
+                company = parts[0].trim();
+                cleanTitle = parts.slice(1).join(":").trim();
+              }
+              const pubDate = item.pubDate ? new Date(item.pubDate) : new Date();
+              const thirtyDaysAgo = Date.now() - 30*24*60*60*1000;
+              if (pubDate.getTime() < thirtyDaysAgo) return;
+              parsedJobs.push({
+                title: cleanTitle,
+                company: company,
+                category: "Remote / Finance",
+                description: item.description ? item.description.replace(/<\/?[^>]+(>|$)/g, "").trim() : "Apply via online board.",
+                url: item.link || "https://linkedin.com",
+                pubDate: pubDate.toISOString()
+              });
+            });
+          }
+        }
+      } catch (e) {
+        console.warn("LinkedIn RSS fetch failed", e);
       }
 
-      // If RSS proxy failed or returned empty, populate with premium pre-loaded dataset
+      // Fallback if none fetched
       if (parsedJobs.length === 0) {
         parsedJobs = [...FALLBACK_JOBS];
       }
