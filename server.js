@@ -4,6 +4,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+// Dynamic ESM import for node-fetch to support CommonJS require fallback
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
+
 // Import helpers from autonomous_hunter.js
 // Import helpers from autonomous_hunter.js
 const {
@@ -59,6 +63,82 @@ app.get('/api/jobs', async (_, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
+// ---------- AI Proxy Endpoint for Claude ----------
+app.post('/api/ai', async (req, res) => {
+  const { messages, system, max_tokens, temperature } = req.body;
+  const clientKey = req.headers['x-anthropic-key'];
+  const apiKey = clientKey || process.env.ANTHROPIC_API_KEY;
+
+  if (!apiKey || apiKey === 'xxxx xxxx xxxx xxxx') {
+    return res.status(400).json({ error: 'Missing Anthropic API Key. Please configure it in the Dashboard Settings (top-right gear icon) or backend .env file.' });
+  }
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: max_tokens || 4000,
+        temperature: temperature ?? 0.3,
+        system: system,
+        messages: messages
+      })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Anthropic API error');
+    }
+    res.json(data);
+  } catch (e) {
+    console.error('Claude API Proxy Error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ---------- SerpAPI Proxy Endpoint ----------
+app.post('/api/scrape-jobs', async (req, res) => {
+  const { query, location } = req.body;
+  const clientKey = req.headers['x-serpapi-key'];
+  const apiKey = clientKey || process.env.SERPAPI_KEY;
+
+  if (!apiKey) {
+    return res.status(400).json({ error: 'Missing SerpAPI Key. Please configure it in Settings.' });
+  }
+
+  try {
+    const url = `https://serpapi.com/search.json?engine=google_jobs&q=${encodeURIComponent(query)}&location=${encodeURIComponent(location || 'Kenya')}&hl=en&api_key=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error || 'SerpAPI search error');
+    }
+    
+    // Map SerpAPI jobs to our standard format
+    const jobs = (data.jobs_results || []).map(job => ({
+      title: job.title,
+      company: job.company_name,
+      location: job.location,
+      category: 'Finance / ' + (job.detected_extensions?.schedule_type || 'Full-time'),
+      description: job.description || 'No description provided.',
+      url: job.related_links?.[0]?.link || 'https://google.com/search?q=' + encodeURIComponent(job.title + ' ' + job.company_name),
+      pubDate: new Date().toISOString()
+    }));
+    
+    res.json({ jobs });
+  } catch (e) {
+    console.error('SerpAPI Proxy Error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 
 // ---------- Merge PDF endpoint ----------
 app.post('/api/merge', async (req, res) => {
@@ -119,4 +199,11 @@ app.post('/api/autoApply', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`🚀 Dashboard API running on http://localhost:${PORT}`));
+
+// Export app for Vercel Serverless Functions
+module.exports = app;
+
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`🚀 Dashboard API running on http://localhost:${PORT}`));
+}
+
