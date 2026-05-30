@@ -199,6 +199,17 @@ app.post('/api/autoApply', async (req, res) => {
   }
 });
 
+// Also support GET for cron triggers (which use GET requests)
+app.get('/api/autoApply', async (req, res) => {
+  try {
+    const result = await runAutoApply();
+    res.json({ success: true, result });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 
 // Export app for Vercel Serverless Functions
 module.exports = app;
