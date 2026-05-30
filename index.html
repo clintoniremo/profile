@@ -543,6 +543,13 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.65; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.65; }
+    }
+
+
     @media (max-width: 900px) {
       .page-wrap { padding: 110px 24px 72px; }
       nav { padding: 16px 24px; }
@@ -606,6 +613,24 @@
             <strong>CPA</strong>
             <span>Fully qualified accounting professional with practical systems expertise</span>
           </div>
+        </div>
+
+        <!-- AI Agent Showcase Card -->
+        <div class="stat-card" style="background: linear-gradient(135deg, #0b1329 0%, #030712 100%); border: 1px solid rgba(200, 169, 110, 0.2); border-radius: 20px; padding: 28px; box-shadow: 0 12px 30px rgba(0,0,0,0.15); display: flex; flex-direction: row; gap: 24px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 10px; margin-bottom: 24px;">
+          <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="display: inline-block; width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; animation: pulse 1.8s infinite;"></span>
+              <span style="font-family: 'Outfit', sans-serif; font-size: 0.76rem; color: #10b981; font-weight: bold; letter-spacing: 1.2px; text-transform: uppercase;">Autonomous Recruitment Agent Live</span>
+            </div>
+            <h3 style="margin: 0; font-family: 'Playfair Display', serif; font-size: 1.45rem; color: #fff; font-weight: 700;">AI Autonomous Career Suite</h3>
+            <p style="margin: 0; font-size: 0.88rem; color: #9ca3af; line-height: 1.5;">
+              Explore Clinton's custom-built recruitment ecosystem: featuring live SerpAPI Google Jobs crawling, Claude 3.5 Sonnet CV/Cover Letter tailoring, ATS compatibility auditor, and an interactive Kanban application tracker.
+            </p>
+          </div>
+          <a href="tailor.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; background: linear-gradient(90deg, #c8a96e, #e2c792); color: #030712; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(200, 169, 110, 0.15); white-space: nowrap; height: fit-content;">
+            Launch AI Matcher
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
         </div>
 
         <section id="about">
