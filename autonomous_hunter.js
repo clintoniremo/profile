@@ -69,7 +69,7 @@ const PROFILE = {
     "Advanced QuickBooks & Microsoft Excel Certification"
   ],
   highlights: [
-    "4+ years of experience across NGO, government (KRA), hospitality, retail, and tech sectors.",
+    "4+ years of experience across NGO, government (KRA), hospital, retail, and tech sectors.",
     "Spearheaded external reconstructions, strengthened internal controls, and secured 4 consecutive clean audit reports.",
     "Served at the KRA Busia One-Stop Border Post, independently managing billion-shilling revenue operations and receiving an official commendation letter."
   ]
