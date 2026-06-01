@@ -20,6 +20,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 // ==================== CONFIGURATION ====================
 const CONFIG = {
@@ -421,60 +422,110 @@ async function fetchOnlineJobs() {
  * Simulated/Template Puppeteer LinkedIn Crawler Framework
  */
 async function scrapeLinkedInTemplate() {
-  // We provide a modular scraper skeleton that users can activate if they install puppeteer
-  // and load their session cookies to query LinkedIn's search pages directly.
-  return new Promise((resolve) => {
-    // We return a high-quality simulated LinkedIn listing to verify crawler operations
-    resolve([
-      {
-        title: "Project Accountant (NGO / Public Sector)",
-        company: "Beacon Health Initiatives East Africa",
-        description: "We are hiring a dedicated Project Accountant. Essential requirements: CPA (K) credential, expert-level reconciliation of general ledgers, QuickBooks setup, donor budget planning (NGO), and comprehensive KRA statutory compliance (VAT, NSSF, WHT). Excellent communications and team leadership.",
-        url: "https://www.linkedin.com/jobs/view/5839201931"
+  if (process.env.SERPAPI_KEY) {
+    try {
+      const jobs = await fetchSerpApiJobs();
+      if (jobs.length > 0) {
+        console.log(`   🟢 [LinkedIn] Retrieved ${jobs.length} jobs from SerpAPI search.`);
+        return jobs;
       }
-    ]);
-  });
+    } catch (err) {
+      console.log(`   ⚠️ [LinkedIn] SerpAPI fetch failed: ${err.message}`);
+    }
+  }
+
+  return [
+    {
+      title: "Project Accountant (NGO / Public Sector)",
+      company: "Beacon Health Initiatives East Africa",
+      description: "We are hiring a dedicated Project Accountant. Essential requirements: CPA (K) credential, expert-level reconciliation of general ledgers, QuickBooks setup, donor budget planning (NGO), and comprehensive KRA statutory compliance (VAT, NSSF, WHT). Excellent communications and team leadership.",
+      url: "https://www.linkedin.com/jobs/view/5839201931"
+    }
+  ];
+}
+
+async function fetchSerpApiJobs() {
+  const apiKey = process.env.SERPAPI_KEY;
+  if (!apiKey) {
+    throw new Error('Missing SERPAPI_KEY for LinkedIn / job search provider.');
+  }
+
+  const query = encodeURIComponent(CONFIG.searchKeywords.join(' '));
+  const location = encodeURIComponent(CONFIG.location || 'Kenya');
+  const url = `https://serpapi.com/search.json?engine=google_jobs&q=${query}&location=${location}&hl=en&api_key=${apiKey}`;
+  const raw = await fetchHttpsGet(url);
+  const data = JSON.parse(raw);
+  const jobs = (data.jobs_results || []).map(job => ({
+    title: job.title || 'Job Opening',
+    company: job.company_name || 'Employer',
+    description: (job.description || job.snippet || '').replace(/<[^>]*>/g, '').trim(),
+    url: job.related_links?.[0]?.link || job.apply_link || job.url || 'https://serpapi.com'
+  }));
+  return jobs;
 }
 
 // ==================== 3. SEMANTIC RELEVANCE SCORE ====================
 
 function analyzeJobMatch(job) {
-  const textContent = `${job.title} ${job.description}`.toLowerCase();
-  
+  const title = (job.title || '').toLowerCase();
+  const company = (job.company || '').toLowerCase();
+  const description = (job.description || '').toLowerCase();
+  const textContent = `${title} ${company} ${description}`;
+  const normalizedLocation = (CONFIG.location || 'Nairobi, Kenya').toLowerCase();
+
   let matchCount = 0;
-  const matches = [];
+  const matches = new Set();
   const gaps = [];
+  const criticalTerms = ['cpa', 'quickbooks', 'kra', 'audit', 'tax', 'ngo', 'reconciliation', 'ifrs', 'reporting'];
 
-  // Iterate over profile keywords and verify presence
   PROFILE.keywords.forEach(kw => {
-    const regex = new RegExp(`\\b${kw.toLowerCase()}\\b|${kw.toLowerCase()}`, 'gi');
+    const expression = kw.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const regex = new RegExp(`\\b${expression}\\b`, 'gi');
     if (regex.test(textContent)) {
-      matchCount++;
-      matches.push(kw.toUpperCase());
-    } else {
-      if (['cpa', 'quickbooks', 'kra', 'ngo', 'payroll', 'audit', 'taxation'].includes(kw)) {
-        gaps.push(kw.toUpperCase());
-      }
+      matchCount += 1;
+      matches.add(kw.toUpperCase());
     }
   });
 
-  // Calculate matching score out of 100
-  // Giving weight to title matches
-  let titleBonus = 0;
-  const titleWords = ['accountant', 'finance', 'auditor', 'tax', 'cpa'];
-  titleWords.forEach(w => {
-    if (job.title.toLowerCase().includes(w)) {
-      titleBonus += 6;
+  const keywordScore = Math.min(55, Math.round((matchCount / PROFILE.keywords.length) * 55));
+  let bonusScore = 0;
+
+  if (/remote|work from home|hybrid/.test(textContent)) {
+    bonusScore += 8;
+    matches.add('REMOTE');
+  }
+
+  if (title.includes('accountant') || company.includes('accountant')) {
+    bonusScore += 8;
+    matches.add('ACCOUNTANT');
+  }
+
+  if (title.includes('finance') || company.includes('finance') || description.includes('finance')) {
+    bonusScore += 6;
+    matches.add('FINANCE');
+  }
+
+  if (description.includes(normalizedLocation.split(',')[0]) || description.includes('nairobi') || description.includes('kenya')) {
+    bonusScore += 4;
+    matches.add('LOCAL');
+  }
+
+  if (/cpa/.test(textContent)) {
+    bonusScore += 10;
+    matches.add('CPA');
+  }
+
+  criticalTerms.forEach(term => {
+    if (!new RegExp(`\\b${term}\\b`, 'gi').test(textContent)) {
+      gaps.push(term.toUpperCase());
     }
   });
 
-  const baseScore = Math.round((matchCount / PROFILE.keywords.length) * 45) + 50;
-  const score = Math.min(baseScore + titleBonus, 98);
-
+  const score = Math.min(100, keywordScore + bonusScore + 35);
   return {
     score,
-    matches: matches.slice(0, 10),
-    gaps: gaps.slice(0, 3)
+    matches: Array.from(matches).slice(0, 12),
+    gaps: gaps.slice(0, 5)
   };
 }
 
@@ -1200,7 +1251,9 @@ module.exports = {
   fetchOnlineJobs,
   fetchLinkedInJobs: scrapeLinkedInTemplate,
   dispatchApplicationEmail,
-  mergeDocuments
+  mergeDocuments,
+  analyzeJobMatch,
+  PROFILE
 };
 
 /**
@@ -1219,7 +1272,6 @@ async function mergeDocuments(cvPath, coverPath) {
     return cvPath;
   }
   // Otherwise, attempt to compile the HTML CV to PDF then return it.
-  const { compilePdfFromHtml } = require('./autonomous_hunter');
   const pdfPath = cvPath.replace(/\.html?$/i, '.pdf');
   const succeeded = await compilePdfFromHtml(cvPath, pdfPath);
   if (succeeded) return pdfPath;

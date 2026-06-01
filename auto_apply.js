@@ -67,7 +67,7 @@ async function runAutoApply() {
     }
   }
 
-  return { applied: filtered.length, mergedPath, jobs: filtered.map(j => ({ title: j.title, company: j.company, link: j.link })) };
+  return { applied: filtered.length, mergedPath, jobs: filtered.map(j => ({ title: j.title, company: j.company, url: j.url || j.link })) };
 }
 
 module.exports = { runAutoApply };

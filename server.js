@@ -15,8 +15,11 @@ const {
   fetchOnlineJobs,
   fetchLinkedInJobs,
   dispatchApplicationEmail,
-  mergeDocuments
+  mergeDocuments,
+  analyzeJobMatch,
+  PROFILE
 } = require('./autonomous_hunter');
+const { generateDocs } = require('./ai_providers/generateDocs');
 
 // Import auto-apply function
 const { runAutoApply } = require('./auto_apply');
@@ -99,6 +102,29 @@ app.post('/api/ai', async (req, res) => {
     res.json(data);
   } catch (e) {
     console.error('Claude API Proxy Error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ---------- AI Document Generation Endpoint ----------
+app.post('/api/generate-docs', async (req, res) => {
+  const { job } = req.body;
+
+  if (!job || !job.title || !job.company || !job.description) {
+    return res.status(400).json({ error: 'Missing required job data: title, company, description' });
+  }
+
+  try {
+    const rating = analyzeJobMatch(job);
+    const docs = await generateDocs(job, rating, PROFILE);
+
+    if (!docs.coverLetter && !docs.htmlCv) {
+      return res.status(500).json({ error: 'AI doc generation failed. Add OPENAI_API_KEY to your .env to enable AI-driven docs.' });
+    }
+
+    res.json({ success: true, rating, docs });
+  } catch (e) {
+    console.error('AI Docs Error:', e);
     res.status(500).json({ error: e.message });
   }
 });
@@ -202,6 +228,10 @@ app.post('/api/autoApply', async (req, res) => {
 
 // Also support GET for cron triggers (which use GET requests)
 app.get('/api/autoApply', async (req, res) => {
+  const token = req.query.token;
+  if (token !== process.env.CRON_TOKEN) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
   try {
     const result = await runAutoApply();
     res.json({ success: true, result });

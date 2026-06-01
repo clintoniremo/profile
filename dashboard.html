@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Job Hunter Dashboard</title>
+  <style>
+    body { margin:0; font-family:Inter,system-ui, sans-serif; background:#071019; color:#e4e9f0; }
+    .page { max-width:1120px; margin:0 auto; padding:24px; }
+    header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-start; gap:16px; }
+    header h1 { margin:0; font-size:2.4rem; color:#fff; }
+    .lead { max-width:620px; color:#9fb4d2; line-height:1.6; }
+    .top-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; }
+    .button { border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.04); color:#fff; padding:12px 18px; border-radius:12px; cursor:pointer; transition:transform .2s, border-color .2s; }
+    .button:hover { transform:translateY(-1px); border-color:#7d9fff; }
+    .panel { margin-top:24px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:18px; padding:22px; }
+    .panel h2 { margin-top:0; color:#c5d6ff; }
+    .grid { display:grid; gap:16px; }
+    .status-grid { grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+    .card { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:18px; }
+    .card strong { display:block; font-size:1.55rem; margin-bottom:8px; color:#fff; }
+    .card span { color:#a8b9d2; }
+    pre { white-space:pre-wrap; word-break:break-word; font-size:.95rem; color:#d7e3ff; }
+    .job-list { list-style:none; margin:0; padding:0; }
+    .job-item { margin-bottom:14px; padding:14px 16px; border:1px solid rgba(255,255,255,0.08); border-radius:14px; background:rgba(255,255,255,0.03); }
+    .job-item a { color:#82cfff; text-decoration:none; }
+    .job-item h3 { margin:0 0 4px; font-size:1.05rem; }
+    .job-item p { margin:6px 0 0; color:#b8cae4; font-size:.95rem; }
+    .jobs-summary { color:#c3d0e8; margin-bottom:18px; }
+    .footer { margin-top:36px; color:#7d8fab; font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Profile Job Hunter Dashboard</h1>
+        <p class="lead">Monitor job scanning, history status, and trigger the crawler directly from the browser. This page uses the backend API to show live data and control the agent.</p>
+      </div>
+      <div class="top-actions">
+        <button class="button" id="refreshStatus">Refresh Status</button>
+        <button class="button" id="refreshJobs">Load Jobs</button>
+        <button class="button" id="triggerCycle">Trigger Scan</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Agent Status</h2>
+      <div class="grid status-grid" id="statusCards">
+        <div class="card"><strong>---</strong><span>Agent state</span></div>
+        <div class="card"><strong>---</strong><span>Applications</span></div>
+        <div class="card"><strong>---</strong><span>Total Scanned</span></div>
+        <div class="card"><strong>---</strong><span>Last run</span></div>
+      </div>
+      <pre id="statusBody">Click Refresh Status to retrieve live backend metrics.</pre>
+    </section>
+
+    <section class="panel">
+      <h2>Job Feed</h2>
+      <div class="jobs-summary" id="jobSummary">No jobs loaded yet.</div>
+      <ul class="job-list" id="jobList"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>Quick Links</h2>
+      <ul>
+        <li><a href="/api/history" target="_blank">View application history JSON</a></li>
+        <li><a href="/api/jobs" target="_blank">Fetch raw rated jobs</a></li>
+        <li><a href="/api/generate-docs" target="_blank">Generate AI docs endpoint</a> (POST only)</li>
+      </ul>
+    </section>
+
+    <footer class="footer">Local URL: <code>http://localhost:3002/dashboard.html</code></footer>
+  </div>
+
+  <script>
+    const statusCards = document.getElementById('statusCards');
+    const statusBody = document.getElementById('statusBody');
+    const jobSummary = document.getElementById('jobSummary');
+    const jobList = document.getElementById('jobList');
+    const refreshStatus = document.getElementById('refreshStatus');
+    const refreshJobs = document.getElementById('refreshJobs');
+    const triggerCycle = document.getElementById('triggerCycle');
+
+    async function fetchStatus() {
+      statusBody.textContent = 'Loading status...';
+      try {
+        const response = await fetch('/api/status');
+        const data = await response.json();
+        statusBody.textContent = JSON.stringify(data, null, 2);
+        const cards = [
+          { label: 'Status', value: data.status || 'unknown' },
+          { label: 'Applied', value: data.stats.totalApplied || 0 },
+          { label: 'Scanned', value: data.stats.totalScanned || 0 },
+          { label: 'Last run', value: data.stats.lastRunTime || 'never' }
+        ];
+        statusCards.innerHTML = cards.map(c => `<div class="card"><strong>${c.value}</strong><span>${c.label}</span></div>`).join('');
+      } catch (error) {
+        statusBody.textContent = 'Failed to load status: ' + error.message;
+      }
+    }
+
+    async function fetchJobs() {
+      jobSummary.textContent = 'Loading jobs...';
+      jobList.innerHTML = '';
+      try {
+        const response = await fetch('/api/jobs');
+        const jobs = await response.json();
+        jobSummary.textContent = `${jobs.length} jobs loaded. Showing top 10 by score.`;
+        jobList.innerHTML = jobs.slice(0, 10).map(job => `
+          <li class="job-item">
+            <h3>${job.title} <small>at ${job.company}</small></h3>
+            <div><strong>Score:</strong> ${job.score || 0}%</div>
+            <p>${(job.description || '').slice(0, 160)}...</p>
+            <a href="${job.url}" target="_blank">Open job</a>
+          </li>
+        `).join('');
+      } catch (error) {
+        jobSummary.textContent = 'Failed to load jobs: ' + error.message;
+      }
+    }
+
+    async function triggerScan() {
+      jobSummary.textContent = 'Triggering background scan...';
+      try {
+        const response = await fetch('/api/trigger-cycle', { method: 'POST' });
+        const data = await response.json();
+        jobSummary.textContent = data.message || 'Triggered scan.';
+      } catch (error) {
+        jobSummary.textContent = 'Failed to trigger scan: ' + error.message;
+      }
+    }
+
+    refreshStatus.addEventListener('click', fetchStatus);
+    refreshJobs.addEventListener('click', fetchJobs);
+    triggerCycle.addEventListener('click', triggerScan);
+
+    fetchStatus();
+    fetchJobs();
+  </script>
+</body>
+</html>

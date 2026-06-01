@@ -1466,9 +1466,9 @@
     <div id="huntingSuiteView" style="display: block;">
       <header style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
         <div style="flex: 1; min-width: 300px;">
-          <h1>AI Autonomous <span>Recruitment Suite & Scraper</span></h1>
+          <h1>Job Match <span>Workspace & Toolkit</span></h1>
           <p>
-            Targeted at **mid-to-senior, management, and audit levels** in Finance, Accounting, Audit, and Tax. Queries live SerpAPI Google Jobs databases across Kenya, scores them against Clinton Oremo's CPA credentials, custom-tailors resume summary briefs, handles ATS score auditing, generates personalised cover letters using Claude 3.5 Sonnet, and maps everything to an application pipeline.
+            Designed for mid-to-senior finance, audit, and tax roles. Combines live job feeds, match scoring, tailored CV summaries, ATS review, cover letter drafting, and pipeline tracking in one place.
           </p>
         </div>
         <div id="liveConnectionBadge" style="display: flex; align-items: center; gap: 10px; border: 1px solid rgba(16,185,129,0.25); background: rgba(16,185,129,0.06); padding: 8px 16px; border-radius: 99px;">
@@ -1681,7 +1681,7 @@
                 </div>
                 <button class="btn-action btn-cyber" onclick="triggerAiGeneration('coverLetter')" id="btnGenCover">
                   <span id="loaderCover" style="display:none;" class="loader"></span>
-                  Generate Claude AI Cover Letter
+                  Generate Tailored Cover Letter
                 </button>
               </div>
 
@@ -1690,7 +1690,7 @@
                 <div class="cv-preview" id="cvContainer"></div>
                 <button class="btn-action btn-cyber" onclick="triggerAiGeneration('tailoredCv')" id="btnGenCV">
                   <span id="loaderCV" style="display:none;" class="loader"></span>
-                  Tailor CV Summary &amp; Competencies (Claude)
+                  Tailor CV Summary &amp; Competencies
                 </button>
               </div>
 
@@ -1755,7 +1755,7 @@
                 </div>
                 <div class="research-brief-box">
                   <h4>Company Brief &amp; Sector Intelligence</h4>
-                  <div id="companyBriefText">Click generate below to perform SerpAPI / Claude search research on hiring firm.</div>
+                  <div id="companyBriefText">Click generate below to create a salary benchmark and company research brief.</div>
                 </div>
                 <button class="btn-action btn-cyber" onclick="triggerAiGeneration('salaryResearch')" id="btnGenResearch">
                   <span id="loaderResearch" style="display:none;" class="loader"></span>
