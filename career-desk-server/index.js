@@ -11,7 +11,7 @@ const profileSchema = z.object({name:z.string().min(1).max(200),email:z.string()
 const jobSchema = z.object({id:z.string().min(1).max(100),title:z.string().min(1).max(300),company:z.string().min(1).max(300),location:z.string().max(500),url:z.string().max(2000).refine(s=>!s||/^https?:\/\//i.test(s)),description:text,salary:z.string().max(500),source:z.string().max(200),published:z.string().max(100),applicationEmail:z.string().email().or(z.literal('')).default(''),recipientConfirmed:z.boolean().default(false),eligibilityConfirmed:z.boolean().default(false),status:z.enum(['Draft','Ready','Applied','Interview','Offer','Closed','Needs review']),letter:text,notes:text,created:z.string().max(100),updated:z.string().max(100),followUp:z.string().max(30)});
 const automationSchema=z.object({enabled:z.boolean(),autoApply:z.boolean(),profileConfirmed:z.boolean(),telegramEnabled:z.boolean(),intervalHours:z.number().int().min(6).max(168),dailyLimit:z.number().int().min(1).max(15),roles:z.string().min(1).max(2000),locations:z.string().min(1).max(2000),lastRun:z.string().nullable(),lastError:z.string().max(2000),runId:z.string().optional(),attempts:z.array(z.object({id:z.string(),day:z.string(),outcome:z.enum(['pending','sent','uncertain'])})).max(10000)});
 const stateSchema=z.object({revision:z.number().int().nonnegative(),data:z.object({profile:profileSchema,applications:z.array(jobSchema).max(300),automation:automationSchema.default(defaultAutomation)})});
-function localRequest(req){return !process.env.VERCEL && ['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket?.remoteAddress) && ['localhost','127.0.0.1','[::1]'].includes(req.hostname);}
+function localRequest(req){return !process.env.VERCEL && ['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress) && ['localhost','127.0.0.1','[::1]'].includes(req.hostname);}
 function authorize(req,res,next){
   res.set('Cache-Control','no-store');
   const expected=process.env.CAREER_DESK_TOKEN;
@@ -28,15 +28,11 @@ function createStore(initial,{directory=process.env.CAREER_DESK_DATA_DIR||path.j
   const url=process.env.UPSTASH_REDIS_REST_URL;
   const token=process.env.UPSTASH_REDIS_REST_TOKEN;
   const key='zuriel:career-desk:v1';
-  // Vercel's filesystem is read-only. Keep a process-local fallback so the
-  // hosted workspace can load before an Upstash store is connected; edits are
-  // intentionally ephemeral until durable storage credentials are configured.
-  let memory = structuredClone(initial);
   async function redis(command){const r=await request(url,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(command),signal:AbortSignal.timeout(10000)});const b=await r.json();if(!r.ok||b.error)throw Error('Private storage is unavailable.');return b.result;}
   function filename(){if(process.env.VERCEL)throw Error('Configure UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN for durable hosted storage.');fs.mkdirSync(directory,{recursive:true});return path.join(directory,'state.json');}
   return {
-    async read(){if(url&&token){await redis(['SET',key,JSON.stringify(initial),'NX']);return JSON.parse(await redis(['GET',key]));}if(process.env.VERCEL)return structuredClone(memory);const file=filename();try{return JSON.parse(fs.readFileSync(file,'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;fs.writeFileSync(file,JSON.stringify(initial),{flag:'wx',mode:0o600});return structuredClone(initial);}},
-    async write(state){const next={data:state.data,revision:state.revision+1};if(url&&token){const script="local s=redis.call('GET',KEYS[1]); if not s or cjson.decode(s).revision~=tonumber(ARGV[1]) then return 0 end; redis.call('SET',KEYS[1],ARGV[2]); return 1";return await redis(['EVAL',script,1,key,state.revision,JSON.stringify(next)])===1;}if(process.env.VERCEL){if(memory.revision!==state.revision)return false;memory=next;return true;}
+    async read(){if(url&&token){await redis(['SET',key,JSON.stringify(initial),'NX']);return JSON.parse(await redis(['GET',key]));}const file=filename();try{return JSON.parse(fs.readFileSync(file,'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;fs.writeFileSync(file,JSON.stringify(initial),{flag:'wx',mode:0o600});return structuredClone(initial);}},
+    async write(state){const next={data:state.data,revision:state.revision+1};if(url&&token){const script="local s=redis.call('GET',KEYS[1]); if not s or cjson.decode(s).revision~=tonumber(ARGV[1]) then return 0 end; redis.call('SET',KEYS[1],ARGV[2]); return 1";return await redis(['EVAL',script,1,key,state.revision,JSON.stringify(next)])===1;}
       const file=filename();const lock=file+'.lock';let fd;try{fd=fs.openSync(lock,'wx');}catch(e){if(e.code==='EEXIST')return false;throw e;}
       try{const current=JSON.parse(fs.readFileSync(file,'utf8'));if(current.revision!==state.revision)return false;const tmp=file+'.'+crypto.randomUUID()+'.tmp';fs.writeFileSync(tmp,JSON.stringify(next),{mode:0o600});fs.renameSync(tmp,file);return true;}finally{fs.closeSync(fd);fs.unlinkSync(lock);}
     }

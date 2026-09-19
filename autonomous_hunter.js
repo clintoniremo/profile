@@ -76,12 +76,12 @@ const PROFILE = {
 };
 
 const multer = require('multer');
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
+const UPLOAD_DIR = require('./runtime-paths').uploads;
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 const upload = multer({ dest: UPLOAD_DIR });
 
 // Create applications output folder if it doesn't exist
-const OUT_DIR = path.join(__dirname, 'applications');
+const OUT_DIR = require('./runtime-paths').applications;
 if (!fs.existsSync(OUT_DIR)) {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 }

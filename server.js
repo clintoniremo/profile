@@ -33,7 +33,7 @@ app.use(['/career-desk-server', '/.career-data'], (_req,res)=>res.sendStatus(404
 app.use(express.static(__dirname));
 
 // ---------- Upload handling ----------
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
+const UPLOAD_DIR = require('./runtime-paths').uploads;
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 const storage = multer.diskStorage({
