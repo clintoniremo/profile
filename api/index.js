@@ -1,7 +1,5 @@
 // api/index.js
 // Vercel Serverless Function entry point
-const app = require('../server.js');
-
-module.exports = (req, res) => {
-  return app(req, res);
-};
+// Vercel's Node runtime natively supports an exported Express application.
+// Exporting it directly preserves request metadata used by the workspace auth.
+module.exports = require('../server.js');
