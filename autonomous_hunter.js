@@ -1279,6 +1279,7 @@ async function mergeDocuments(cvPath, coverPath) {
   return cvPath;
 }
 
+if (require.main === module) {
   const args = process.argv.slice(2);
   const hasLoop = args.includes('--loop');
   const hasDashboard = args.includes('--dashboard') || args.includes('--serve');
@@ -1303,3 +1304,6 @@ async function mergeDocuments(cvPath, coverPath) {
     main();
   }
 // Removed stray IIFE closure
+
+}
+

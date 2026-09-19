@@ -1,0 +1,5 @@
+const fs=require('fs');const os=require('os');const path=require('path');
+const {createStore,stateSchema,normalizeJob}=require('../career-desk-server');
+test('file storage persists updates and rejects stale revisions',async()=>{const directory=fs.mkdtempSync(path.join(os.tmpdir(),'zuriel-test-'));try{const initial={revision:0,data:{applications:[]}};const store=createStore(initial,{directory});const s=await store.read();s.data.applications.push({id:'1'});expect(await store.write(s)).toBe(true);expect(await store.write(s)).toBe(false);expect((await createStore(initial,{directory}).read()).data.applications).toHaveLength(1);}finally{fs.rmSync(directory,{recursive:true,force:true});}});
+test('normalization rejects executable links and strips markup',()=>{const job=normalizeJob({title:'<b>Accountant</b>',url:'javascript:alert(1)',description:'<script>bad()</script>Payroll'});expect(job.url).toBe('');expect(job.description).toBe('Payroll');});
+test('invalid qualification and daily limit are rejected',()=>{expect(stateSchema.safeParse({revision:0,data:{profile:{cpa:'assumed'},applications:[]}}).success).toBe(false);});
