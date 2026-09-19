@@ -24,8 +24,8 @@ const AUTO_APPLY_CONFIG = {
   // Maximum number of applications per run to avoid spamming.
   maxApplications: 5,
   // Paths to the CV and cover letter PDFs that will be merged.
-  cvPath: path.join(__dirname, 'uploads', 'cv.pdf'),
-  coverPath: path.join(__dirname, 'uploads', 'cover.pdf'),
+  cvPath: path.join(require('./runtime-paths').uploads, 'cv.pdf'),
+  coverPath: path.join(require('./runtime-paths').uploads, 'cover.pdf'),
 };
 
 /**

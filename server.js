@@ -26,11 +26,14 @@ const { runAutoApply } = require('./auto_apply');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
+const careerDeskRouter = require('./career-desk-server').createRouter({profile:PROFILE,fetchJobs:async()=>{const results=await Promise.allSettled([fetchOnlineJobs(),fetchLinkedInJobs()]);const completed=results.filter(r=>r.status==='fulfilled');if(!completed.length)throw new Error('All job sources unavailable');return completed.flatMap(r=>r.value);}});
+app.use('/api/career-desk',careerDeskRouter);
 app.use(express.json());
-app.use(express.static(__dirname));;
+app.use(['/career-desk-server', '/.career-data'], (_req,res)=>res.sendStatus(404));
+app.use(express.static(__dirname));
 
 // ---------- Upload handling ----------
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
+const UPLOAD_DIR = require('./runtime-paths').uploads;
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -246,6 +249,9 @@ app.get('/api/autoApply', async (req, res) => {
 module.exports = app;
 
 if (require.main === module) {
-  app.listen(PORT, () => console.log(`🚀 Dashboard API running on http://localhost:${PORT}`));
+  // Runs only while this server is alive; no mail is sent until enabled in Zuriel.
+  setInterval(()=>careerDeskRouter.automation.run().catch(error=>console.error('Zuriel scheduled search:',error.message)),60000).unref();
+  app.listen(PORT, '127.0.0.1', () => console.log(`🚀 Dashboard API running on http://localhost:${PORT}`));
 }
+
 
